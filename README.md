@@ -13,7 +13,7 @@ Code for paper, offline writer identification on character level <br>
 Weights are stored in separate folder NISTweights (baseline+finder) <br>
 
 # src
-# Nist
+## Nist
 Source code consist of a couple of separate files: <br>
 - **NIST_Data_Util.ipynb**                  - prepare dataset <br>
 - **NIST_Data_Util_Advanced.ipynb**         - create ImageDisk and InfoDisk files <br>
