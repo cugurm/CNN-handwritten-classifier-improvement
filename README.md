@@ -21,5 +21,27 @@ Source code consist of a couple of separate files: <br>
 - **NIST_Clustering_Knn_Evaluation.ipynb**  - cluster characters on train+val, create knn method and evaluate on final 200 writers (+2.36%) <br>
 
 # NEW IDEAS:
+
+## Parse UBuffalo inkmls
 UBuffalo inkmls with writer identification parse it with CROHME tool 
 HM: "Yes, the segGenerator.py script from crohmelib can do that. This is what we use to generate the isolated symbols from the full expressions (with ground-truth)."
+
+- can't do that cause od mail conversation with Harlod Muchere - they have semi-supervised methond for character segmentation in Crohme
+
+## ETH_Zurich dataset:
+deepwriting_training.npz
+deepwriting_validation.npz are files in specific dictionary numpy format.
+
+First convert them to:
+eth_dataset0.zip
+eth_dataset1.zip
+eth_dataset2.zip
+which are files in .svg format
+
+Then onvert them to 28x28 centered, scale preserved .png images:
+ETH_png_archive.zip.
+
+Wrchive contains 294 writers, 369455 images, average: 1256 images/writer
+No of labels: 70
+Average character / writer x label = 17.95 (Strongly unbalanced).
+
