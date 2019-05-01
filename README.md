@@ -44,4 +44,5 @@ ETH_png_archive.zip.
 Wrchive contains 294 writers, 369455 images, average: 1256 images/writer
 No of labels: 70
 Average character / writer x label = 17.95 (Strongly unbalanced).
+- Link to dataset on GoogleDrive: [Link](https://drive.google.com/open?id=1AdX4sndfOcl32B9CSWPn5VNDl4kW1hAP)
 
