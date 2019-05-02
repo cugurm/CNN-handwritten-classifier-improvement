@@ -29,18 +29,18 @@ HM: "Yes, the segGenerator.py script from crohmelib can do that. This is what we
 - can't do that cause od mail conversation with Harlod Muchere - they have semi-supervised methond for character segmentation in Crohme
 
 ## ETH_Zurich dataset:
-deepwriting_training.npz
-deepwriting_validation.npz are files in specific dictionary numpy format.
+- [deepwriting_training.npz](https://drive.google.com/open?id=1bZLyuC8C8D8y94knKkpqbNrE7H76Yeki)<br>
+- [deepwriting_validation.npz](https://drive.google.com/open?id=1MqYfcrdPDa9t8miWd4uj91gh_6ChTdG7)<br> are files in specific dictionary numpy format.
 
-First convert them to:
-eth_dataset0.zip
-eth_dataset1.zip
-eth_dataset2.zip
+First convert them to:<br>
+- [eth_dataset0.zip](https://drive.google.com/open?id=1oYEIGBxJ6BzmqCa0MD90OcTiPrXvVT5l) <br>
+- [eth_dataset1.zip](https://drive.google.com/open?id=1baBXNqcmP9VGiC5BRruLrXqSCCfQxI-g) <br>
+- [eth_dataset2.zip](https://drive.google.com/open?id=1-3EMwYauqJQAFeTV5pWHFiEKkSDGfs78) <br>
 which are files in .svg format
 
-Then onvert them to 28x28 centered, scale preserved .png images:
-ETH_png_archive.zip.
-
+Then onvert them to 28x28 centered, scale preserved .png images:<br>
+- [ETH_png_archive.zip](https://drive.google.com/open?id=1RM9ZoXmnIwhIXNsngF73wj2ce-4CAy-A).
+<br>
 Wrchive contains 294 writers, 369455 images, average: 1256 images/writer
 No of labels: 70
 Average character / writer x label = 17.95 (Strongly unbalanced).
