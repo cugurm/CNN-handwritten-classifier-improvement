@@ -1,5 +1,7 @@
 # Automatic customization of offline handwritten text classifier to individual users
-Code for master thesis and paper, focus on offline writer identification on character level <br>
+Code for master thesis and paper, focus on offline writer identification on character level. <br>
+The proposed method boost neural network classifier up to +2.7%. <br>
+The method achieves state of the art. <br>
 
 # papers
 Contains source pdfs for several dataset etc.
