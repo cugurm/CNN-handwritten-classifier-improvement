@@ -1,5 +1,5 @@
-# Offline_Writer_Identification
-Code for paper, offline writer identification on character level <br>
+# Automatic customization of offline handwritten text classifier to individual users
+Code for master thesis and paper, focus on offline writer identification on character level <br>
 
 # papers
 Contains source pdfs for several dataset etc.
@@ -26,7 +26,7 @@ Weights are stored in separate folder NIST_weights (baseline+finder). <br>
 Weights are stored in separate folder ETH_Zurich_weights (baseline+finder). <br>
 
 # DATASETS
-## Parse UBuffalo inkmls
+## Parse UBuffalo inkmls (todo)
 UBuffalo inkmls with writer identification parse it with CROHME tool 
 HM: "Yes, the segGenerator.py script from crohmelib can do that. This is what we use to generate the isolated symbols from the full expressions (with ground-truth)."
 
@@ -51,7 +51,7 @@ which are files in .svg format
 Then onvert them to 28x28 centered, scale preserved .png images:<br>
 - [ETH_png_archive.zip](https://drive.google.com/open?id=1RM9ZoXmnIwhIXNsngF73wj2ce-4CAy-A).
 <br>
-Wrchive contains 294 writers, 369455 images, average: 1256 images/writer
+Archive contains 294 writers, 369455 images, average: 1256 images/writer
 No of labels: 70
 Average character / writer x label = 17.95 (Strongly unbalanced).
 - Link to dataset on GoogleDrive: [Link](https://drive.google.com/open?id=1AdX4sndfOcl32B9CSWPn5VNDl4kW1hAP)
