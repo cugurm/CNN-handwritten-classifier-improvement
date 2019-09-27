@@ -1,0 +1,172 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2019
+
+% ready for submission
+% \usepackage{neurips_2019}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2019}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+\usepackage[final]{neurips_2019}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\title{Learn the Way We Write: Automatic Adjustment of %offline 
+Handwriting Neural Classifier to Individual Users}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  Milan M.~Čugurović\thanks{poincare.matf.bg.ac.rs/$\sim$milan\_cugurovic} \\
+  Department of Computer Science\\
+  Faculty of Mathematics\\
+  University of Belgrade\\
+  Belgrade, 11000\\
+  Serbia\\
+  \texttt{milan\_cugurovic@math.rs} \\
+  % examples of more authors
+  \And
+  Mladen Nikolić\thanks{poincare.matf.bg.ac.rs/$\sim$nikolic} \\
+  Department of Computer Science\\
+  Faculty of Mathematics\\
+  University of Belgrade\\
+  Belgrade, 11000\\
+  Serbia\\
+  \texttt{nikolic@math.rs}
+  \And
+  Novak Novaković \\
+  Microsoft Development Center Serbia\\
+  Belgrade, 11000\\
+  Serbia\\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  In this paper, we consider improving convolution neural network (CNN) classifier of offline handwritten text.  
+  We focus on the style of handwriting each of the individual users, causing of its great variability and huge impact on the ability to successfully recognize written characters. 
+  We present fast, scalable and a no-retrain method for improving CNNs classifier. 
+  Using only basic machine learning techniques, such as K nearest neighbor classifier and K means clustering, we achieve up to +2.7\% improvement in neural classifier precision, and get state of the art results on the dataset we use. 
+  We evaluate our method on two dataset: NIST Special Database 19 and ETH Zurich Deepwriting dataset. 
+\end{abstract}
+
+\section{Introduction}
+pass
+
+\section{Related work}
+pass 
+
+\subsection{Previous work in offline handwritten character recognition}
+pass
+
+\subsection{Previous work in improving offline handwriting classifiers}
+pass
+
+\section{Method}
+pass
+
+\subsection{Method overview}
+pass 
+
+\subsection{Clustering individual character writing styles}
+pass 
+
+\subsection{Creating a writing history}
+Možda zaista usvojiti naziv 'dynamic writing history' za istoriju pisanja?
+
+\subsection{Using writing history}
+pass
+
+%\section{Implementation}
+%pass
+
+\section{Evaluation}
+pass
+
+\subsection{Used datasets}
+pass
+
+\subsubsection{NIST Special Database 19}
+pass
+
+\subsubsection{ETH Zurich Deepwriting Database}
+pass
+
+\subsection{Images preprocessing}
+pass
+
+\subsection{Datasets split}
+pass
+
+\subsubsection{NIST Special Database 19 split}
+pass \citet{nist}
+
+\subsubsection{ETH Zurich Deepwriting Database split}
+pass \cite{deepwriting}
+
+\subsection{Base CNN classificator}
+pass
+
+\subsubsection{Architecture}
+pass 
+
+\subsubsection{Training and results}
+pass
+
+\subsection{Evaluation results}
+pass
+
+\subsection{Comparison with relevant papers}
+Ovo možda u related works?
+
+\section{Conclusion}
+pass 
+
+\small
+
+\begin{thebibliography}{99} 
+  \bibitem[Patrick et al. (2016)]{nist} Patrick, Grother \ \&  Kayee, Hanaoka\ (2016) NIST Special Database 19 Handprinted Forms and Characters, 2nd Edition
+  \bibitem[Aksan et al. (2018)]{deepwriting} Aksan, Emre \ \& Pece, Fabrizio \ \& Hilliges, Otmar\ (2018) DeepWriting: Making Digital Ink Editable via Deep Generative Modeling
+  In {\itshape SIGCHI Conference on Human Factors in Computing Systems}: CHI '18, ACM, New York, NY, USA
+\end{thebibliography}
+
+
+\end{document}
