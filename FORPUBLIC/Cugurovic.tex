@@ -92,7 +92,32 @@ Handwriting Neural Classifier to Individual Users}
 The problem of automatic recognition of offline handwritten characters is a very practical problem, which is a part of the area of pattern recognition. 
 Inspired by practical use, it develops both within academia as well as within the industrial sector. 
 The industrial sector directly commercializes solutions of this problem by including them into devices like tablets, smartphones and the like. 
-That is why it is very important to have precise classifiers that rarely make mistakes. 
+Cause of that it is very important to have precise classifiers that rarely make mistakes. 
+
+The pioneering attempt to automatically recognize handwritten characters dates back to the 1950s \citet{leedham}. 
+After this initial attempt a few a group of researchers worked independently on this problem \citet{plamondon}. 
+Within the software and hardware limitations of that time, remarkable results were achieved. 
+In the last ten years, the intensive development of neural networks has led to a shift in boundaries in many areas, 
+including in the area of offline handwriting recognition. 
+The results achieved by using convolutional neural networks exceeds the results of all methods developed up to then \citet{cnnbest1} \citet{cnnbest2} \citet{cnnbest3}. 
+
+Although convolutional neural networks have significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. 
+In this paper, we presented fast, alphabet-independent and scalable method which improves pretrained CNN without its retraining.
+
+%The new approach is based on the idea of knowing the character writing style each of the individual users and adjusting pretrained CNN to each of them. 
+%Previous was accomplished by dynamic monitoring both of CNNs mistakes and successful predictions. 
+%The main goal of this paper is to increase the precision of convolution neural networks created and trained for the purpose of classification of handwritten characters. 
+%The improvement presented in this paper is based on the fact that handwriting style is something unique for each individual, or something that largely identifies it.
+% The classifier improvement is based on the dynamic monitoring of both his mistakes and successful predictions. 
+
+The new approach is based on the idea of knowing the character writing style each of the individual users. 
+Presented improvement of pretrained offline handwriting CNN classifier is based on the dynamic monitoring both of his mistakes and successful predictions. 
+By this monitoring, we created the so-called user writing history. 
+Based on user writing history, a set of several models of KNN classifiers is formed, for different values of $K$ and the reliability of both the base classifier and these models is evaluated (in a principled way, which will be described later). 
+Based on these ratings, method decide which one label to anticipate. 
+
+In this paper, Section 2 describes work related to this problem while the proposed method is fully described in Section 3.
+Section 4 provides experimental results, and conclusions are given in Section 5.
 
 \section{Related work}
 pass 
@@ -167,8 +192,21 @@ pass
 
 \begin{thebibliography}{99} 
   \bibitem[Patrick et al. (2016)]{nist} Patrick, Grother \ \&  Kayee, Hanaoka\ (2016) NIST Special Database 19 Handprinted Forms and Characters, 2nd Edition
+  
   \bibitem[Aksan et al. (2018)]{deepwriting} Aksan, Emre \ \& Pece, Fabrizio \ \& Hilliges, Otmar\ (2018) DeepWriting: Making Digital Ink Editable via Deep Generative Modeling
   In {\itshape SIGCHI Conference on Human Factors in Computing Systems}: CHI '18, ACM, New York, NY, USA
+  
+  \bibitem[C.G. Leedham (1994)]{leedham} C.G. Leedham \ (1994) Historical perspectives of handwriting recognition systems 
+  In {\itshape IEE Colloquium on Handwriting and Pen-Based Input}: 1-3
+  
+  \bibitem[Plamondon et al. (2000)]{plamondon} Plamondon, R., \ \& Srihari, S.N.\ (2000). 
+  On-Line and Off-Line Handwriting Recognition: A Comprehensive Survey. IEEE Trans. Pattern Anal. Mach. Intell., 22, 63-84.
+
+  \bibitem[Srihari et al. (2006)]{cnnbest1} Srihari, Sargur N., \& Xuanshen Yang \& and Gregory R. Ball. \ (2006) “Offline Chinese Handwriting Recognition : A Survey.”
+
+  \bibitem[Pavarez et al. (2013)]{cnnbest2} Parvez, Mohammad \&  Mahmoud, Sabri. \ (2013). Offline Arabic Handwritten Text Recognition: A Survey. ACM Computing Surveys (CSUR). 45. 10.1145/2431211.2431222. 
+
+  \bibitem[Awaida et al. (2012)]{cnnbest3} Awaida, Sameh \& Mahmoud, Sabri. \ (2012). State of the art in off-line writer identification of handwritten text and survey of writer identification of Arabic text. Educational Research and Reviews. 7. 10.5897/ERR11.303. 
 \end{thebibliography}
 
 
