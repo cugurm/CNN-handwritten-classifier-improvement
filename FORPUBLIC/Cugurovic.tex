@@ -129,16 +129,49 @@ pass
 pass
 
 \section{Method}
-pass
+
+This section describe the proposed method for improving the CNN classifier of offline handwritten text. 
+Note that while the idea behind the learning users handwriting style is rather simple, because of the complexity of the proposed method, we first give it an overview. 
 
 \subsection{Method overview}
-pass 
+
+The basic idea is to distinguish the reference modes %pattern
+of writing for each character. 
+This is motivated by the intuition that each character can be written in finite significantly different ways. 
+Separation the different writing styles of each character was achieved by clustering. 
+Thus, for each of the characters, several clusters were obtained representing aggregated different writing styles of that character. 
+This tends to separate the different writing styles each of them. 
+
+When proposed method is used, on application set, for each user a set of characters that he or she authored is divided into two sets: an adaptation set and test set. 
+On adaptation set we detect the user's writing style by memorizing his individual characters writing patterns. 
+On the test set, the proposed method makes predictions by taking into account the user's writing style. 
+
+A sketch of the proposed method, which will be explained in more detail in the following sections, is given with: 
+\begin{itemize}
+  \item Images from the training set for the base classifier and validation set for the base classifier are grouped by labels (characters) and clustered within each group. 
+  These clusters represent the main writing styles for each of the characters.
+  \item For each author of the application set: 
+  \begin{itemize}
+    \item The set of his images is stratified into adaptation set and test set. 
+    \item In the adaptation set, for each of the characters the most similar writing styles (from already defined writing styles) are being identified, which makes the author's writing history. 
+    \item Alternative classifiers (K nearest neighbor method) and their confidence vectors are created on the adaptation set. 
+    \item For every instance of test set (where proposed method is used):
+      \begin{itemize}
+        \item In addition to the base CNN prediction, alternative classifier predictions are also calculated.
+        \item Based on the confidence vectors of all the classifiers, the prediction of the most reliable of them is selected. 
+        \item For each classifier, using the correct and its predicted labels, its confidence vector is updated. 
+      \end{itemize}
+  \end{itemize}
+\end{itemize}
+A more detailed description of each step, as well as an explanation of terms such as writing history and the classifier confidence vector are given in more detail in the following sections. 
+
 
 \subsection{Clustering individual character writing styles}
 pass 
 
 \subsection{Creating a writing history}
-Možda zaista usvojiti naziv 'dynamic writing history' za istoriju pisanja?
+pass
+%Možda zaista usvojiti naziv 'dynamic writing history' za istoriju pisanja?
 
 \subsection{Using writing history}
 pass
