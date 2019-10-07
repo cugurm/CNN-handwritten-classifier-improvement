@@ -422,7 +422,7 @@ The results of such a trained classifier are are $87.65\%$, $83.12\%$ and $82.12
 
 The evaluation method includes data stratification and resampling techniques. 
 
-The stratified data split of each of the users of the application set into his adaptation and testing sets are of great importance. 
+The stratified data split of each of the users from the application set into his adaptation and testing sets are of great importance. 
 The stratification is performed with respect to the corresponding labels, thereby achieving approximately equal distribution of the labels in the adaptation set and in the test set. 
 This avoids the situation of character occurrence in evaluation, where the corresponding label was not seen in the user writing history 
 (in such a scenario, our model cannot give an improvement but behaves the same as a base classifier). 
@@ -435,17 +435,79 @@ In the evaluation, resampling is used so that for an arbitrary user precision is
 independently $n$\footnote{where $n$ represents the resampling parameter} times, 
 each time with a stratified split of data into a section intended to create a user writing history and a section intended for the evaluation.  
 
-% koristi tekst od bez a podatke od sa resampling
+The presented method goes beyond the results reported so far on the NIST Special Database 19, using the transformation of images into resolution $28 \times 28$ promoted by the MNIST and EMNIST data sets. 
+It is important to note that the data split we used does not follow the recommended data partition for the training and test set of the NIST dataset, due to the specificity of the proposed method 
+(the division used in the evaluation create application set of those authors who have written the most characters, cause of the great imbalance and difference 
+in the number of written characters between the authors of the NIST dataset and 
+the fact that the proposed method requires a certain amount of data to learn information about the writing style of an individual user). 
+Therefore, there is no easy way to directly compare our results with the previous ones. % Therefore, there is no easy way to directly compare our work with previous, and therefore we don't claim that the proposed model is better than all previous ones, (we are just showing that our results are in the best rankings so far).
+The presented improvement method achieves a precision of $89.60\%$, which outperforms the previously published results. 
+This result was achieved by improuving a base network whose results were worse than the best published on NIST so far 
+(by increasing the accuracy of the base network for $2.4\%$, we have exceeded the best published results on this dataset so far). 
+
+There are currently no publicly published results of the classification problem on the Deepwriting dataset, and therefore our results are state of the art. 
+The presented improuvement method increases the precision of the base classifier for $2.72\%$ thereby achieving a precision of $84.77\%$. 
+
+More detailed evaluation results (whereby the number of resamples was set to $10$) are given in the table below. 
+
+\begin{table}[h!]
+  \caption{Detailed evaluation results}
+  \label{table1}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \multicolumn{2}{}{Dataset} & Dataset \\
+    \cmidrule(r){2-3}
+    Property & NIST    & Deepwriting \\
+    \midrule
+    No. of writers in test set &  $200$  & $25$     \\
+    No. of images in test set & $81,685$ & $37,672$      \\
+    Achieved precision & $89.60\%$ & $84.77\%$ \\
+    Achieved increase in precision of the base classifier& $2.36\%$ & $2.72\%$ \\
+    Theoretically the largest possible increase in precision of the base classifier & $4.18\%$ & $4.33\%$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+During the evaluation, for each user of the application set, we monitored the precision of the base classifier as well as the precision of the improvement method.  
+The number/percentage of images on which the base classifier correctly predicted the labels, the number/percentage of images on which the improuvement method gave the correct labels, 
+and the number/percentage of images where at least one of them was correct were monitored. 
+The last one is included for the purpose of assessing the quality of improvement method, 
+which is a marginal case or scenario that could happen if we in any time knows which classifier to believe, 
+whether the the base or one of the methods of the K nearest neighbor simultaneously performed with him. 
+Previous represents the upper limit for the improvement method quality.
+
+In the case of NIST dataset the model was tested on $81,685$ images written by $200$ different authors. 
+The precision of the base classifier on them is $87.24\%$, while the precision achieved by the improvement method on the same set is equal to $89.60\%$. 
+The upper limit of precision achievable by the our method is $91.42\%$. 
+There are $24$ authors on whose the base classifier performs better than the presented improvement method, on $9$ authors they have the same performance, 
+while as many as on $167$ of them a new improvement method has better performance than the base CNN. 
+In the performed evaluation, the improvement method gives an increase in the precision of the base classifier of $2.36\%$. 
+Theoretically, the highest possible increase in precision (by this evaluation) is $4.18\%$. 
+
+In the case of the Deepwriting dataset we tested our model on $37,672$ images, which was written by $25$ different authors. 
+The base classifier achieves an accuracy of $82.05\%$, improvement method of $84.77\%$, while the upper limit of improvement method is $86.38\%$. 
+Our model increases the precision of the base classifier by $2.72\%$, while in theory the largest possible increase in precision equals $4.33\%$. 
+On the images of $24$ authors, our method achieves greater precision than the base network, while on the images of one author, the base network achieves greater precision. 
+
+% TODO: Obrisi tabelu, uklopi lepo rezultate NIST pa Deepwriting, stavi uvodni fokus na povecanje preciznosti (vidi gde ces a mozes i tu ovaj pasus ispod); dodaj n=10 resampling kad uklopis
+
+%Pri nezavisnim evaluacijama sistem se pokazuje jako dobro, daju¢i pobolj²anja
+%na bazi podataka NIST od oko 2:3%, dok na Deepwriting skupu podataka pove¢anje
+%preciznosti iznosi preko 2:7% sa jako malim odstupanjima. Prilikom evaluacije broj
+%ponovnih uzorkovanja postavljen je na 10.
 
 %\subsection{Comparison with relevant papers}
 % Ovo možda u related works?
 % Ali kako onda uporediti?
-% eliminisi redundantnost podataka
 \section{Conclusion}
 pass 
+% Ovde zakljucak, vidi sta od poredjenja ide u previous works
+
 % Negde gore komentarisati kako i zasto smo koritili Beta raspodelu da kazem zbog konjigate priors i sl.?
 % Citirati rad sem iz NI? 
 % Srediti po ugledu na emnist preprocessing section
+% eliminisi redundantnost podataka
 \small
 
 \begin{thebibliography}{99} 
