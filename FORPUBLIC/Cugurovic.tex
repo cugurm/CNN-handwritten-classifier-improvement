@@ -359,10 +359,10 @@ while users with less written characters remained in the training and validation
 Approximately ten percent of all images are in the application set, while the remaining images are divided into training and validation sets for the base classifier 
 such that the number of authors in them is in a ratio $9 : 1$. 
 
-Detailed information about datasets splits are given in the table below \ref{table2}. 
+Detailed information about datasets splits are given in the table \ref{table2}. 
 
 \begin{table}[h!]
-  \caption{Breakdown of the number of samples in creating splits}
+  \caption{Breakdown of the number of samples in created splits}
   \label{table2}
   \centering
   \begin{tabular}{lll}
@@ -371,12 +371,12 @@ Detailed information about datasets splits are given in the table below \ref{tab
     \cmidrule(r){2-3}
     Property & NIST    & Deepwriting \\
     \midrule
-    Number of writers in train set for the base classifier &  $3057$  & $242$     \\
-    Number of writers in validation set for the base classifier & $339$ & $27$      \\
-    Number of writers in adaptation set & $200$ & $70$ \\
-    Number of images in train set for the base classifier &  $659,541$  & $298,313$     \\
-    Number of images in validation set for the base classifier & $73,209$ & $33,484$      \\
-    Number of images in adaptation set & $81,505$ & $37,658$ \\
+    No. of writers in train set for the base classifier &  $3057$  & $242$     \\
+    No. of writers in validation set for the base classifier & $339$ & $27$      \\
+    No. of writers in adaptation set & $200$ & $70$ \\
+    No. of images in train set for the base classifier &  $659,541$  & $298,313$     \\
+    No. of images in validation set for the base classifier & $73,209$ & $33,484$      \\
+    No. of images in adaptation set & $81,505$ & $37,658$ \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -393,21 +393,59 @@ On this basis, it is realistic to expect an even better system behavior in the c
 The base classifier whose improvement is presented in this paper is a convolutional neural network based on the \textit{Caffe} architecture \citet{caffe}. 
 
 \subsubsection{Architecture}
-pass 
+
+Our base neural network is trained on images of size $28 \times 28$, while its output has a Softmax function or a layer that predicts as a class, in the case of the NIST database one of $62$ labels, 
+and in the case of the Deepwriting dataset one of $70$ labels. 
+The base neural classifiers created for the two datasets considered in this paper differ only in the number of neurons of the last layer. 
+
+The convolutional part of the neural network consists of three successive blocks, each consisting of two consecutive convolutions, followed by batch normalization layer, 
+which is again followed by an aggregation layer. 
+The number of filters in the convolutional layers increases monotonically by blocks. 
+Convolutions use a rectified linear unit (ReLU) as an activation function. 
+Aggregation is performed using the max-pooling function, retaining the same image dimensions after aggregation. 
+The convolutional part is followed by a fully connected block, which uses dropout regularization. 
+The complete network contains more than $350,000$ parameters. 
 
 \subsubsection{Training and results}
-pass
+
+The basic neural classifier was trained by the Adam optimization method with parameters $\beta_1=0.9$, $\beta_2=0.999$ and with a learning rate of $0.001$. 
+
+In the case of the NIST dataset, the base classifier was trained in $35$ epochs in three series of $20$, $10$ and $5$ epochs each. 
+Each successive series uses a larger batch size. 
+This kind of training is inspired by the actual work in this area \citet{lrbs}. 
+The results achieved by the base classifier on the NIST dataset are $88.36\%$, $87.39\%$ and $87.35\%$ respectively on the training set for the base classifier, validation set for the base classifier and application set. 
+
+The base classifier on the Deepwriting dataset was trained for 20 epochs, after which training was stopped by the early stopping technique. 
+The results of such a trained classifier are are $87.65\%$, $83.12\%$ and $82.12\%$ respectively on the training set for the base classifier, validation set for the base classifier and application set. 
 
 \subsection{Evaluation results}
-pass
 
-\subsection{Comparison with relevant papers}
-Ovo možda u related works?
+The evaluation method includes data stratification and resampling techniques. 
 
+The stratified data split of each of the users of the application set into his adaptation and testing sets are of great importance. 
+The stratification is performed with respect to the corresponding labels, thereby achieving approximately equal distribution of the labels in the adaptation set and in the test set. 
+This avoids the situation of character occurrence in evaluation, where the corresponding label was not seen in the user writing history 
+(in such a scenario, our model cannot give an improvement but behaves the same as a base classifier). 
+This situation, however, cannot be completely eliminated, but its likelihood can be reduced. 
+This partially eliminates the bad properties of the datasets we work with. 
+In the case of an ideal dataset, or real use scenario, stratification would not be required. 
+The stratified split of the application set images was performed by sending $90\%$ of the images to the adaptation set, while $10\%$ of them ended up in the test set. 
+
+In the evaluation, resampling is used so that for an arbitrary user precision is not only calculated once on the application set, but the same procedure is repeated 
+independently $n$\footnote{where $n$ represents the resampling parameter} times, 
+each time with a stratified split of data into a section intended to create a user writing history and a section intended for the evaluation.  
+
+% koristi tekst od bez a podatke od sa resampling
+
+%\subsection{Comparison with relevant papers}
+% Ovo možda u related works?
+% Ali kako onda uporediti?
+% eliminisi redundantnost podataka
 \section{Conclusion}
 pass 
 % Negde gore komentarisati kako i zasto smo koritili Beta raspodelu da kazem zbog konjigate priors i sl.?
-
+% Citirati rad sem iz NI? 
+% Srediti po ugledu na emnist preprocessing section
 \small
 
 \begin{thebibliography}{99} 
@@ -446,7 +484,9 @@ pass
 
   \bibitem[LeCun (1998)]{mnist} LeCun, Y. \ (1998). "The MNIST database of handwritten digits." http://yann.lecun.com/exdb/mnist/.
 
-  \bibitem[Jia et al. (2014)]{caffe} Jia, Y. \& Shelhamer, E.\& Donahue, J. \& Karayev, S. \& Long, J.\& Girshick, R., ... \& Darrell, T. \ (2014, November). Caffe: Convolutional architecture for fast feature embedding. In Proceedings of the 22nd ACM international conference on Multimedia (pp. 675-678). ACM.
+  \bibitem[Jia et al. (2014)]{caffe} Jia, Y. \& Shelhamer, E.\& Donahue, J. \& Karayev, S. \& Long, J.\& Girshick, R., ... \& Darrell, T. \ (2014, November). "Caffe: Convolutional architecture for fast feature embedding." In Proceedings of the 22nd ACM international conference on Multimedia (pp. 675-678). ACM.
+
+  \bibitem[Smith et al. (2017)]{lrbs} Smith, S. L. \& Kindermans, P. J. \& Ying, C. \& Le, Q. V. \ (2017). "Don't decay the learning rate, increase the batch size." arXiv preprint arXiv:1711.00489.
 \end{thebibliography}
 
 
