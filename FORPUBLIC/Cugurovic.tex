@@ -119,13 +119,32 @@ Based on these ratings, the method decides which one label to anticipate.
 In this paper, Section 2 describes work related to this problem while the proposed method is fully described in Section 3.
 Section 4 provides experimental results, and conclusions are given in Section 5.
 
-\section{Related work}
-pass 
+\section{Related work}  % Da li treba da izgleda "malo standardnije"?
 
-\subsection{Previous work in offline handwritten character recognition}
+This section provides background about improving offline handwritten character recognition. 
+
+% CNN rezultati generalno
+Due to their properties, convolutional neural networks are one of the leading classification mechanisms by which many problems of computer vision are solved, 
+and even some of the problems of recognizing offline handwritten characters.
+
+% NIST rezultati
+On the NIST dataset, several independent groups of researchers have published papers with different classification algorithms. 
+A committee of seven CNNs obtains precision of $88.12\%$ \citet{nist1}. All CNNs are trained in full online mode with changing learning rate and other importan parameters. 
+For committee forming training is conducted on the original and six preprocessed datasets (Preprocessing is motivated by writing style
+variations resulting in different aspect ratios of the handwritten characters). % FIKS OVOGA
+
+% Deepwriting rezultati
+There are currently no published results of the classification problem on the Deepwriting dataset. 
+
+% Najbolji rezultati generalno
 pass
 
-\subsection{Previous work in improving offline handwriting classifiers}
+% Poboljsanje generalno
+In terms of publications related to improving the offline handwritten character recognition, 
+none of them focuses on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
+However, there are papers that work to improve the various types of offline handwritten text classifiers.
+
+% Poboljsanje CNNa
 pass
 
 \section{Method}
@@ -261,7 +280,7 @@ This is a great advantage when using the presented improvement model in practice
 In this section, the results of the proposed method will be discussed. 
 We carried out the experiments on two public databases: NIST Special Database 19 (American National Institute of Standards and Technology) and 
 Deepwriting Dataset (ETH Zurich). % Da li ovde da ih citiram ili dole u pasusima sa njihovim detaljima?
-In the first of them, our proposed method increases the accuracy of the base classifier by approximately $2.3-2.5\%$. 
+In independent evaluations, our improvement method behaves very stable, and in the first of them increases the accuracy of the base classifier by approximately $2.3-2.5\%$. 
 In the second dataset, the increase in precision of the base classifier is greater than $2.7\%$. 
 
 In addition to significantly increasing the precision of base CNN, other qualities of the proposed method should be considered. 
@@ -445,29 +464,10 @@ The presented improvement method achieves a precision of $89.60\%$, which outper
 This result was achieved by improuving a base network whose results were worse than the best published on NIST so far 
 (by increasing the accuracy of the base network for $2.4\%$, we have exceeded the best published results on this dataset so far). 
 
-There are currently no publicly published results of the classification problem on the Deepwriting dataset, and therefore our results are state of the art. 
+On the Deepwriting dataset, there are no published results of the classification problem so far, and therefore our results are state of the art. 
 The presented improuvement method increases the precision of the base classifier for $2.72\%$ thereby achieving a precision of $84.77\%$. 
 
-More detailed evaluation results (whereby the number of resamples was set to $10$) are given in the table below. 
-
-\begin{table}[h!]
-  \caption{Detailed evaluation results}
-  \label{table1}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{}{Dataset} & Dataset \\
-    \cmidrule(r){2-3}
-    Property & NIST    & Deepwriting \\
-    \midrule
-    No. of writers in test set &  $200$  & $25$     \\
-    No. of images in test set & $81,685$ & $37,672$      \\
-    Achieved precision & $89.60\%$ & $84.77\%$ \\
-    Achieved increase in precision of the base classifier& $2.36\%$ & $2.72\%$ \\
-    Theoretically the largest possible increase in precision of the base classifier & $4.18\%$ & $4.33\%$ \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+More detailed evaluation results (whereby the number of resamples was set to $10$) are given in the paragraphs below. 
 
 During the evaluation, for each user of the application set, we monitored the precision of the base classifier as well as the precision of the improvement method.  
 The number/percentage of images on which the base classifier correctly predicted the labels, the number/percentage of images on which the improuvement method gave the correct labels, 
@@ -491,23 +491,37 @@ Our model increases the precision of the base classifier by $2.72\%$, while in t
 On the images of $24$ authors, our method achieves greater precision than the base network, while on the images of one author, the base network achieves greater precision. 
 
 % TODO: Obrisi tabelu, uklopi lepo rezultate NIST pa Deepwriting, stavi uvodni fokus na povecanje preciznosti (vidi gde ces a mozes i tu ovaj pasus ispod); dodaj n=10 resampling kad uklopis
-
-%Pri nezavisnim evaluacijama sistem se pokazuje jako dobro, daju¢i pobolj²anja
-%na bazi podataka NIST od oko 2:3%, dok na Deepwriting skupu podataka pove¢anje
-%preciznosti iznosi preko 2:7% sa jako malim odstupanjima. Prilikom evaluacije broj
-%ponovnih uzorkovanja postavljen je na 10.
-
 %\subsection{Comparison with relevant papers}
 % Ovo možda u related works?
 % Ali kako onda uporediti?
 \section{Conclusion}
-pass 
-% Ovde zakljucak, vidi sta od poredjenja ide u previous works
+
+In this paper, we present a conceptually simple yet powerful method, by which we were able to increase the precision of the base neural network up to $2.7\%$. 
+The proposed method exhibits many positive properties, such as stability 
+(in terms of showing good performance with multiple independent evaluations) and scalability (in terms of improving performance with more data), 
+which is very important for real application because then we are expecting a really large amount of information about the handwriting of the device user. 
+The presented method is also alphabet independent, which greatly expands its application domain. 
+In this paper, we have been able to improve the neural network without re-training it by creating a system that adapts to it the right way, 
+learning its mistakes and making the right predictions. 
+Therefore, our system is very fast and does not require powerful graphics cards for its execution, 
+which makes it suitable for installation on smaller devices, which again qualifies it for practical use. 
+
+The main contribution of this paper is the development of a new method that uses basic algorithms and machine learning techniques such as K-means clustering 
+and K nearest neighbor classification, which outperforms the performance of leading classifiers of offline handwritten text. 
+The proposed model of improuvement at the time of use of the base classifier provides prediction by combining the prediction of the base classifier 
+with the predictions of a series of auxiliary classifiers. 
+This delegates decision making, thus creating space to isolate the handwriting style of each user. 
+It is important to note that our work is based on learning the writing style of individual users and is the first work of this kind. 
+No work before ours attempts to improve the performance of an offline handwritten text classifier by focusing on the writing style itself. 
+% Mozda istaci ranije prethodne dve recenice?
+
+Future research may include meta-learning and few-shot learning techniques to prepare a base classifier for quick adaptation to each new user. 
 
 % Negde gore komentarisati kako i zasto smo koritili Beta raspodelu da kazem zbog konjigate priors i sl.?
 % Citirati rad sem iz NI? 
 % Srediti po ugledu na emnist preprocessing section
 % eliminisi redundantnost podataka
+% STA CU SA REZULTATIMA NA NISTU I DEEPWRITINGU DA IH POMINJEM ILI NE, AKO DA GDE?
 \small
 
 \begin{thebibliography}{99} 
@@ -549,7 +563,9 @@ pass
   \bibitem[Jia et al. (2014)]{caffe} Jia, Y. \& Shelhamer, E.\& Donahue, J. \& Karayev, S. \& Long, J.\& Girshick, R., ... \& Darrell, T. \ (2014, November). "Caffe: Convolutional architecture for fast feature embedding." In Proceedings of the 22nd ACM international conference on Multimedia (pp. 675-678). ACM.
 
   \bibitem[Smith et al. (2017)]{lrbs} Smith, S. L. \& Kindermans, P. J. \& Ying, C. \& Le, Q. V. \ (2017). "Don't decay the learning rate, increase the batch size." arXiv preprint arXiv:1711.00489.
-\end{thebibliography}
 
+  % Related works publications:
+  \bibitem[Ciresan et al. (2011)]{nist1} Ciresan, D.C. \& Meier, Ueli \& Gambardella, L.M. \& Schmidhuber, Juergen. \ (2011). "Convolutional Neural Network Committees For Handwritten Character Classification. Proceedings of the International Conference on Document Analysis and Recognition", ICDAR. 1135 - 1139. 10.1109\/ICDAR.2011.229. 
+\end{thebibliography}
 
 \end{document}
