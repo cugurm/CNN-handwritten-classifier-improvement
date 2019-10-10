@@ -100,10 +100,11 @@ Within the software and hardware limitations of that time, remarkable results we
 In the last ten years, the intensive development of neural networks has led to a shift in boundaries in many areas, 
 including in the area of offline handwriting recognition. 
 The results achieved by using convolutional neural networks exceed the results of all methods developed up to then \citet{cnnbest1} \citet{cnnbest2} \citet{cnnbest3}. 
+Additionally, convolutional neural networks are also used as parts of complex systems that deal with the recognition of offline handwritten characters, 
+mainly as the powerful feature extractors \citet{cnnrelated1} \citet{cnnrelated2} \citet{cnnrelated3}.
 
 Although convolutional neural networks have significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. 
 In this paper, we presented a fast, an alphabet-independent and scalable method which improves pretrained CNN without its retraining.
-
 %The new approach is based on the idea of knowing the character writing style each of the individual users and adjusting pretrained CNN to each of them. 
 %Previous was accomplished by dynamic monitoring both of CNNs mistakes and successful predictions. 
 %The main goal of this paper is to increase the precision of convolution neural networks created and trained for the purpose of classification of handwritten characters. 
@@ -122,30 +123,36 @@ Section 4 provides experimental results, and conclusions are given in Section 5.
 \section{Related work}  % Da li treba da izgleda "malo standardnije"?
 
 This section provides background about improving offline handwritten character recognition. 
-
-% CNN rezultati generalno
-Due to their properties, convolutional neural networks are one of the leading classification mechanisms by which many problems of computer vision are solved, 
-and even some of the problems of recognizing offline handwritten characters.
+In addition, an overview of the results achieved so far on the datasets we use is given. 
+% CNN rezultati generalno - dodato u introduction
+% Due to their properties, convolutional neural networks are one of the leading classification mechanisms by which many problems of computer vision are solved. 
+% In the area of offline handwriting character recognition CNN achieves some of the state-of-the-art results. 
 
 % NIST rezultati
 On the NIST dataset, several independent groups of researchers have published papers with different classification algorithms. 
-A committee of seven CNNs obtains precision of $88.12\%$ \citet{nist1}. All CNNs are trained in full online mode with changing learning rate and other importan parameters. 
-For committee forming training is conducted on the original and six preprocessed datasets (Preprocessing is motivated by writing style
-variations resulting in different aspect ratios of the handwritten characters). % FIKS OVOGA
+A committee of seven CNNs obtains precision of $88.12\%$ \citet{nist1}. 
+For committee forming training is conducted both on the original and six preprocessed datasets 
+(preprocessing is motivated by the purpose of handling different aspect ratios of the handwritten characters). 
+Using multicolumn deep neural network a precision of $88.37\%$ was achieved \citet{nist2}. 
+This architecture was motivated by biological ideas, forcing sparsely connected neural layers like in a mammal's brain. 
+Combining a convolutional neural network as a feature extractor and (linear) support vector machines as a classifier, 
+an efficient method for improving the convolutional neural network is presented \cite{nist3}. 
+By using the methods of k nearest neighbors, bagging and random forest classifier, a cheap feature selection algorithm was developed, 
+and precision around $75\%$ was achieved \citet{nist4}. 
+Recently, on-device user customization of CNN which implies retrain of smaller augmenting network is proposed, 
+showing a 3.5-fold reduction of the prediction error after doing user customization \citet{nist5}. 
 
 % Deepwriting rezultati
 There are currently no published results of the classification problem on the Deepwriting dataset. 
 
-% Najbolji rezultati generalno
-pass
-
-% Poboljsanje generalno
+% Metodi poboljsanja generalno - nema ih!
 In terms of publications related to improving the offline handwritten character recognition, 
-none of them focuses on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
-However, there are papers that work to improve the various types of offline handwritten text classifiers.
-
-% Poboljsanje CNNa
-pass
+there is only one paper that tends to improve the offline handwritten text classifier. 
+However, the method presented in it doesn't focus on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
+The aforementioned publication \citet{nist5} propose a smaller augmenting network that can be re-trained on user device using his own data. %Using the smaller engine allows customization of large base network without losing generality. 
+A coarse-grained reconfigurable array processor was used to reduce the energy required for network retraining. 
+A standard way to improve the performance of a set of classifiers is to integrate them using bagging, voting and other stacking techniques. 
+Here we mention papers of this type, although this is not essentially a work on improving a particular classifier \citet{imp1} \citet{imp2} \citet{imp3}. 
 
 \section{Method}
 
@@ -566,6 +573,28 @@ Future research may include meta-learning and few-shot learning techniques to pr
 
   % Related works publications:
   \bibitem[Ciresan et al. (2011)]{nist1} Ciresan, D.C. \& Meier, Ueli \& Gambardella, L.M. \& Schmidhuber, Juergen. \ (2011). "Convolutional Neural Network Committees For Handwritten Character Classification. Proceedings of the International Conference on Document Analysis and Recognition", ICDAR. 1135 - 1139. 10.1109\/ICDAR.2011.229. 
+
+  \bibitem[Ciresan et al. (2012)]{nist2} Cireşan, Dan \& Meier, Ueli \& Schmidhuber, Juergen. \ (2012). "Multi-column Deep Neural Networks for Image Classification." Proceedings  CVPR, IEEE Computer Society Conference on Computer Vision and Pattern Recognition. IEEE Computer Society Conference on Computer Vision and Pattern Recognition. 10.1109\/CVPR.2012.6248110. 
+
+  \bibitem[Darmatasia et al. (2017)]{nist3} Palehai, Darmatasia \& Fanany, Mohamad Ivan. \ (2017). "Handwriting Recognition on Form Document Using Convolutional Neural Network and Support Vector Machines (CNN-SVM)." 10.1109\/ICoICT.2017.8074699. 
+
+  \bibitem[Cilia et al. (2018)]{nist4} Cilia, Nicole \& De Stefano, Claudio \& Fontanella, Francesco \& Scotto di Freca, Alessandra. (2018). "A ranking-based feature selection approach for handwritten character recognition." Pattern Recognition Letters. 10.1016\/j.patrec.2018.04.007. 
+
+  \bibitem[Barend et al. (2019)]{nist5} Harris, Barend \& Bae, Inpyo \& Egger, Bernhard. \ (2018). "Architectures and algorithms for on-device user customization of CNNs." Integration. 10.1016\/j.vlsi.2018.11.001. 
+
+  \bibitem[Durjoy et al. (2015)]{cnnrelated1} Sen Maitra, Durjoy \& Bhattacharya, Ujjwal \& Parui, Swapan. \ (2015). "CNN based common approach to handwritten character recognition of multiple scripts." 1021-1025. 10.1109\/ICDAR.2015.7333916. 
+
+  \bibitem[Elleuch et al. (2016)]{cnnrelated2} Elleuch, Mohamed \& Maalej, Rania. \ (2016). "A New Design Based-SVM of the CNN Classifier Architecture with Dropout for Offline Arabic Handwritten Recognition." Procedia Computer Science. 80. 1712-1723. 10.1016\/j.procs.2016.05.512. 
+
+  \bibitem[Zhong et al. (2015)]{cnnrelated3} Zhong, Zhuoyao \& Jin, Lianwen \& Xie, Zecheng. \ (2015)." High performance offline handwritten Chinese character recognition using GoogLeNet and directional feature maps." 846-850. 10.1109\/ICDAR.2015.7333881. 
+
+  \bibitem[Ding et al. (2017)]{cnnrelated3} Ding, Haisong \& Chen, Kai \& Yuan, Ye \& Cai, Meng \& Sun, Lei \& Liang, Sen \& Huo, Qiang. \ (2017). "A Compact CNN-DBLSTM Based Character Model for Offline Handwriting Recognition with Tucker Decomposition." 507-512. 10.1109\/ICDAR.2017.89. 
+
+  \bibitem[Govindarajan (2013)]{imp1} Govindarajan, M.. (2013). "Evaluation of Ensemble Classifiers for Handwriting Recognition." International Journal of Modern Education and Computer Science. 5. 11-20. 10.5815\/ijmecs.2013.11.02. 
+
+  \bibitem[Mahreen et al. (2017)]{imp2} Ahmed, Mahreen \& Rasool, Asma \& Afzal, Hammad \& Siddiqi, Imran. \ (2017). "Improving Handwriting based Gender Classification using Ensemble Classifiers." Expert Systems with Applications. 85. 10.1016\/j.eswa.2017.05.033. 
+
+  \bibitem[Ramy et al. (2009)]{imp3} Mohamad, Ramy \& Likforman-Sulem, Laurence \& Mokbel, Chafic. \ (2009). "Combining Slanted-Frame Classifiers for Improved HMM-Based Arabic Handwriting Recognition." IEEE transactions on pattern analysis and machine intelligence. 31. 1165-77. 10.1109\/TPAMI.2008.136. 
 \end{thebibliography}
 
 \end{document}
