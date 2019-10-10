@@ -81,21 +81,21 @@ Handwriting Neural Classifier to Individual Users}
 \maketitle
 
 \begin{abstract}
-  In this paper, we consider improving convolution neural network (CNN) classifier of offline handwritten text.  
-  We focus on the style of handwriting each of the individual users, causing of its great variability and huge impact on the ability to successfully recognize written characters. 
-  We present fast, scalable and a no-retrain method for improving CNNs classifier. 
-  Using only basic machine learning techniques, such as K nearest neighbor classifier and K means clustering, we achieve up to +2.7\% improvement in neural classifier precision, and get state of the art results on the dataset we use. 
-  We evaluate our method on two dataset: NIST Special Database 19 and ETH Zurich Deepwriting dataset. 
+  In this paper, we consider improving the convolution neural network (CNN) classifier of offline handwritten text.  
+  We focus on the style of handwriting each of the individual users, causing its great variability and huge impact on the ability to successfully recognize written characters. 
+  We present a fast, scalable and no-retrain method for improving CNNs classifier. 
+  Using only basic machine learning techniques, such as K nearest neighbor classifier and K means clustering, we achieve up to +2.7\% improvement in neural classifier precision and get state of the art results on the dataset we use. 
+  We evaluate our method on two datasets: NIST Special Database 19 and ETH Zurich Deepwriting dataset. 
 \end{abstract}
 
 \section{Introduction}
 The problem of automatic recognition of offline handwritten characters is a very practical problem, which is a part of the area of pattern recognition. 
 Inspired by practical use, it develops both within academia as well as within the industrial sector. 
-The industrial sector directly commercializes solutions of this problem by including them into devices like tablets, smartphones and the like. 
+The industrial sector directly commercializes solutions to this problem by including them into devices like tablets, smartphones and the like. 
 Cause of that it is very important to have precise classifiers that rarely make mistakes. 
 
 The pioneering attempt to automatically recognize handwritten characters dates back to the 1950s \citet{leedham}. 
-After this initial attempt a few a group of researchers worked independently on this problem \citet{plamondon}. 
+After this initial attempt, a few a group of researchers worked independently on this problem \citet{plamondon}. 
 Within the software and hardware limitations of that time, remarkable results were achieved. 
 In the last ten years, the intensive development of neural networks has led to a shift in boundaries in many areas, 
 including in the area of offline handwriting recognition. 
@@ -104,7 +104,7 @@ Additionally, convolutional neural networks are also used as parts of complex sy
 mainly as the powerful feature extractors \citet{cnnrelated1} \citet{cnnrelated2} \citet{cnnrelated3}.
 
 Although convolutional neural networks have significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. 
-In this paper, we presented a fast, an alphabet-independent and scalable method which improves pretrained CNN without its retraining.
+In this paper, we presented a fast, alphabet-independent and scalable method that improves pretrained CNN without its retraining. 
 %The new approach is based on the idea of knowing the character writing style each of the individual users and adjusting pretrained CNN to each of them. 
 %Previous was accomplished by dynamic monitoring both of CNNs mistakes and successful predictions. 
 %The main goal of this paper is to increase the precision of convolution neural networks created and trained for the purpose of classification of handwritten characters. 
@@ -128,12 +128,21 @@ In addition, an overview of the results achieved so far on the datasets we use i
 % Due to their properties, convolutional neural networks are one of the leading classification mechanisms by which many problems of computer vision are solved. 
 % In the area of offline handwriting character recognition CNN achieves some of the state-of-the-art results. 
 
+% Metodi poboljsanja generalno - nema ih!
+In terms of publications related to improving the offline handwritten character recognition, 
+there is only one paper that tends to improve the offline handwritten text classifier. 
+However, the method presented in it doesn't focus on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
+The aforementioned publication \citet{nist5} propose a smaller augmenting network that can be re-trained on user device using his own data. %Using the smaller engine allows customization of large base network without losing generality. 
+A coarse-grained reconfigurable array processor was used to reduce the energy required for network retraining. 
+A standard way to improve the performance of a set of classifiers is to integrate them using bagging, voting and other stacking techniques. 
+Here we mention papers of this type, although this is not essentially a work on improving a particular classifier \citet{imp1} \citet{imp2} \citet{imp3}. 
+
 % NIST rezultati
 On the NIST dataset, several independent groups of researchers have published papers with different classification algorithms. 
-A committee of seven CNNs obtains precision of $88.12\%$ \citet{nist1}. 
+A committee of seven CNNs obtains a precision of $88.12\%$ \citet{nist1}. 
 For committee forming training is conducted both on the original and six preprocessed datasets 
 (preprocessing is motivated by the purpose of handling different aspect ratios of the handwritten characters). 
-Using multicolumn deep neural network a precision of $88.37\%$ was achieved \citet{nist2}. 
+Using a multicolumn deep neural network a precision of $88.37\%$ was achieved \citet{nist2}. 
 This architecture was motivated by biological ideas, forcing sparsely connected neural layers like in a mammal's brain. 
 Combining a convolutional neural network as a feature extractor and (linear) support vector machines as a classifier, 
 an efficient method for improving the convolutional neural network is presented \cite{nist3}. 
@@ -144,15 +153,6 @@ showing a 3.5-fold reduction of the prediction error after doing user customizat
 
 % Deepwriting rezultati
 There are currently no published results of the classification problem on the Deepwriting dataset. 
-
-% Metodi poboljsanja generalno - nema ih!
-In terms of publications related to improving the offline handwritten character recognition, 
-there is only one paper that tends to improve the offline handwritten text classifier. 
-However, the method presented in it doesn't focus on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
-The aforementioned publication \citet{nist5} propose a smaller augmenting network that can be re-trained on user device using his own data. %Using the smaller engine allows customization of large base network without losing generality. 
-A coarse-grained reconfigurable array processor was used to reduce the energy required for network retraining. 
-A standard way to improve the performance of a set of classifiers is to integrate them using bagging, voting and other stacking techniques. 
-Here we mention papers of this type, although this is not essentially a work on improving a particular classifier \citet{imp1} \citet{imp2} \citet{imp3}. 
 
 \section{Method}
 
@@ -237,9 +237,9 @@ We used the Euclidean metric for the search. % fix
 This search attempts to identify the user's character's writing style with some of the predefined styles.  
 
 The writing history for each ordered pair \textit{(predicted label, correct label)} remembers the average of the centroids closest to the output vector of the next-to-last CNN layer. 
-The interpretation of this is as follows: when the base CNN classfier predict %provide?
+The interpretation of this is as follows: when the base CNN classifier predicts % provide?
  a \textit{predicted label} for a picture showing the \textit{correct label}, 
-on the basis of the output of next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character). 
+on the basis of the output of the next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character). 
 Clusters assigned to the same pair may not always be identical. 
 We consider their average to be a writing style for a particular character of a particular user. 
 
@@ -260,7 +260,7 @@ Correct predictions increase the value of parameter $\beta$
 while negative predictions increase the value of parameter $\alpha$ 
 (thus reducing the mathematical expectation of beta distribution). 
 
-The confidence vector of each of the classifiers is updated based on the original labels and its predictions for the images of the adaptation set. 
+The confidence vector of each of the classifiers is updated based on the original labels and their predictions for the images of the adaptation set. 
 The KNNs training set is a subset of the user's writing history, consisting of vectors and their original labels of all writing history pairs for 
 which the \textit{predicted label} equals the current prediction of the base classifier. 
 
