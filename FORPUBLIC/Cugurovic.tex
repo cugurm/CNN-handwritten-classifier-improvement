@@ -246,10 +246,10 @@ We consider their average to be a writing style for a particular character of a 
 \subsection{Using user writing history}
 
 After creating user writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify its predictions and change them based on the method K closest neighbors 
-which is trained on the mentioned user writing history. 
+which was trained on the mentioned user writing history. 
 The method we present, on the history of writing do not create one KNN model for correction, but a series of KNN models, where $k$ taking values $2, 4, 6, 8$ and $10$. 
 
-Based on the user's writing history, a confidence vector of the base classifier and a confidence vectors of the KNN methods are created for each of the previous values of the $k$ parameter. 
+Based on the users writing history, a confidence vector of the base classifier and a confidence vectors of the KNN methods are created for each of the previous values of the $k$ parameter. 
 The classifier confidence vector is an array of beta distribution expectations, which evaluate the reliability of the classifier when predicting each of the labels. 
 One beta distribution is created for each label $l$. 
 The degree of confidence of the classifier for label $l$ is represented by the mathematical expectation of the created beta distribution. 
@@ -267,7 +267,7 @@ which the \textit{predicted label} equals the current prediction of the base cla
 In doing so, we created appropriate confidence vectors at the adaptation set, and we evaluate the reliability of both the base classifier and the k nearest-neighbor methods, for different values of $k$. 
 Based on that, we determine which one classifier to trust during model use (we believe the classifier that for the given image has the highest reliability on the character he predicts). 
 
-When used, in a test set, instead of just one prediction that can give us a base CNN classifier, we get multiple of them simultaneously. 
+When used, in a test set, instead of just one prediction that a base CNN classifier gives us, we get multiple of them simultaneously. 
 For each image, based on the predictions of the base CNN classifier and the author's writing history, we obtain predictions of nearest neighbor methods for various values of $k$. 
 If the base classifier predicts label $l$, within the writing history, we look at the style vectors of all the pairs \textit{(predicted label, correct label)} for which the \textit{predicted label} is precisely $l$. 
 Using these vectors, for each value of $k$, we make the decision by the KNN method with respect to the correct labels. 
@@ -311,8 +311,8 @@ scanned from the appropriate forms, along with the corresponding labels.
 In addition, the database contains reference forms for possible further data collection and software tools for working with them. 
 
 The first version of this database was published as CD-ROM \citet{nistv0}, and then re-released using a modern file format \citet{nist}. 
-The dataset contains binarized images created from $3669$ forms and contains $814,255$ segmented, manually classified, handwritten letters and numbers. 
-These characters are presented as monochromatic images of $128 \times 128$ resolution while labeled with one of the 62 ASCII classes corresponding to the English alphabet characters and digits. 
+The dataset contains binarized images created from $3669$ forms and contains segmented, manually classified handwritten letters and numbers. 
+These characters are presented as monochromatic images of $128 \times 128$ resolution while labeled with one of the 62 ASCII classes corresponding to the English alphabet characters and Arabic numerals. 
 The database is structured in five different ways, hierarchically organized according to different criteria. 
 In this paper, the data used is structured by appropriate authors or classes. 
 
@@ -353,22 +353,22 @@ Detailed information about dataset are given in the table \ref{table1}.
   \end{tabular}
 \end{table}
 
-% Da li je potrebno objasniti zasto smo uspesni na NISTU a samo 3.65 je prosek?
+% Da li je potrebno objasniti zasto smo uspesni na NISTU a samo 3.65 je prosek? 
 \subsection{Images preprocessing}
 
-On both datasets preprocessing was inspired by famous MNIST dataset \citet{mnist} and it was modeled on the work that describes the creation of the EMNIST dataset \citet{emnist}. 
+On both datasets preprocessing was inspired by the famous MNIST dataset \citet{mnist} and it was modeled on the work that describes the creation of the EMNIST dataset \citet{emnist}. 
 In the mentioned paper, the conversion process consists of the following steps, in sequence: 
-adding a Gaussian blur, cropping the character from the image, centering the previously cropped character, and resizing the image in $28 \times 28$. 
+blurring images using Gaussian filter, cropping the character from the image, centering the previously extracted character, and resizing the image into a $28 \times 28$ pixel frame. 
 Unlike the mentioned publication, we first cut the original image whereby the size of the margin around the character is set to one pixel. 
-After that, a Gaussian filter is applied to the cropped character (the standard deviation of the Gaussian kernel is set to 1). 
+After that, a Gaussian filter is applied to the cropped character (the standard deviation of the Gaussian kernel is set to $1$). 
 
 After cropping and blurring, the character is centered in a square frame. 
-When centering, it is important to emphasize that the resolution of the character does not change, but the shorter dimension of the image expands with the empty space. 
+When centering, it is important to emphasize that the aspect ratio of the extracted character is preserved, because we expand the shorter dimension of the image with the empty space. 
 This transformation from an image of dimension $w\times h$ creates an image of dimension $max\{w, h\}\times max\{w, h\}$. 
-The original character height to width ratio is one of the specifics of the handwriting, so losing this ratio would be a loosing of information. 
-Subsequently, a square image of dimension $max\{w, h\}\times max\{w, h\}$, 
-where $w$ and $h$ are original image width and height respectively, is converted to a square image of dimension $28 \times 28$. 
-This conversion was done using bicubic interpolation. 
+The original character height to width ratio is one of the specifics of the handwriting, so losing this aspect ratio would be a loosing of information. 
+Finally, a square image of dimension $max\{w, h\}\times max\{w, h\}$, 
+where $w$ and $h$ are original image width and height respectively, is converted to $28 \times 28$ pixels. 
+This conversion was done using bi-cubic interpolation. 
 
 Datasets, created as described, are available in Zip format (as addition to this paper). 
 
@@ -380,10 +380,11 @@ When splitting the data into subsets, all images of one author belong to the sam
 Considering the idea of the proposed approach, which implies learning the specifics of the author's handwriting style's on each individual character, 
 a significant number of images are required for each individual character of each individual user. 
 As the original dataset is quite unbalanced (in terms of the character count of each user), the division was made so that those who wrote more were transferred to the application set, 
-while users with less written characters remained in the training and validation of the base classifier. 
+while users with less written characters remained in the training and validation set of the base classifier. 
 
 Approximately ten percent of all images are in the application set, while the remaining images are divided into training and validation sets for the base classifier 
-such that the number of authors in them is in a ratio $9 : 1$. 
+such that the number of authors in them is in a ratio of $9 : 1$. 
+90\% of the images of each author of the application set make his adaptation set, while the remaining 10\% of the images makes his test set. 
 
 Detailed information about datasets splits are given in the table \ref{table2}. 
 
@@ -407,12 +408,10 @@ Detailed information about datasets splits are given in the table \ref{table2}.
   \end{tabular}
 \end{table}
 
-90\% of the images of each author of the application set make his adaptation set, while the remaining 10\% of the images makes his test set. 
-
 It is important to point out that the NIST dataset is extremely unbalanced, in the sense that for each individual user there are many more images that are 
 labeled with some of the numbers than with other characters. 
 Despite this, the improved method presented in this paper has proven to be very successful. 
-On this basis, it is realistic to expect an even better system behavior in the case of favorable datasets, and in realistic implementation. 
+On this basis, it is realistic to expect an even better system behavior in the case of favorable datasets, or in realistic implementation. 
 
 \subsection{Base CNN classificator}
 
@@ -424,12 +423,12 @@ Our base neural network is trained on images of size $28 \times 28$, while its o
 and in the case of the Deepwriting dataset one of $70$ labels. 
 The base neural classifiers created for the two datasets considered in this paper differ only in the number of neurons of the last layer. 
 
-The convolutional part of the neural network consists of three successive blocks, each consisting of two consecutive convolutions, followed by batch normalization layer, 
-which is again followed by an aggregation layer. 
+The convolutional part of the neural network consists of three successive blocks, each consisting of two consecutive convolutions, followed by Batch normalization layer, 
+which is again followed by an Aggregation layer. 
 The number of filters in the convolutional layers increases monotonically by blocks. 
-Convolutions use a rectified linear unit (ReLU) as an activation function. 
-Aggregation is performed using the max-pooling function, retaining the same image dimensions after aggregation. 
-The convolutional part is followed by a fully connected block, which uses dropout regularization. 
+Convolutions use a Rectified linear unit (ReLU) as an activation function. 
+Aggregation is performed using the Max-pooling function, retaining the same image dimensions after aggregation. 
+The convolutional part is followed by a fully connected block, which uses Dropout regularization. 
 The complete network contains more than $350,000$ parameters. 
 
 \subsubsection{Training and results}
@@ -446,7 +445,7 @@ The results of such a trained classifier are are $87.65\%$, $83.12\%$ and $82.12
 
 \subsection{Evaluation results}
 
-The evaluation method includes data stratification and resampling techniques. 
+The evaluation method includes both data stratification and resampling techniques. 
 
 The stratified data split of each of the users from the application set into his adaptation and testing sets are of great importance. 
 The stratification is performed with respect to the corresponding labels, thereby achieving approximately equal distribution of the labels in the adaptation set and in the test set. 
@@ -460,6 +459,7 @@ The stratified split of the application set images was performed by sending $90\
 In the evaluation, resampling is used so that for an arbitrary user precision is not only calculated once on the application set, but the same procedure is repeated 
 independently $n$\footnote{where $n$ represents the resampling parameter} times, 
 each time with a stratified split of data into a section intended to create a user writing history and a section intended for the evaluation.  
+% Da li treba motivisati zasto se radi resampling?
 
 The presented method goes beyond the results reported so far on the NIST Special Database 19, using the transformation of images into resolution $28 \times 28$ promoted by the MNIST and EMNIST data sets. 
 It is important to note that the data split we used does not follow the recommended data partition for the training and test set of the NIST dataset, due to the specificity of the proposed method 
@@ -470,6 +470,7 @@ Therefore, there is no easy way to directly compare our results with the previou
 The presented improvement method achieves a precision of $89.60\%$, which outperforms the previously published results. 
 This result was achieved by improuving a base network whose results were worse than the best published on NIST so far 
 (by increasing the accuracy of the base network for $2.4\%$, we have exceeded the best published results on this dataset so far). 
+% Prvo kazem nismo lako uporedivi, odmah posle mi smo bolji, da li je to okej?
 
 On the Deepwriting dataset, there are no published results of the classification problem so far, and therefore our results are state of the art. 
 The presented improuvement method increases the precision of the base classifier for $2.72\%$ thereby achieving a precision of $84.77\%$. 
@@ -497,12 +498,13 @@ The base classifier achieves an accuracy of $82.05\%$, improvement method of $84
 Our model increases the precision of the base classifier by $2.72\%$, while in theory the largest possible increase in precision equals $4.33\%$. 
 On the images of $24$ authors, our method achieves greater precision than the base network, while on the images of one author, the base network achieves greater precision. 
 
-% TODO: Obrisi tabelu, uklopi lepo rezultate NIST pa Deepwriting, stavi uvodni fokus na povecanje preciznosti (vidi gde ces a mozes i tu ovaj pasus ispod); dodaj n=10 resampling kad uklopis
 %\subsection{Comparison with relevant papers}
 % Ovo možda u related works?
 % Ali kako onda uporediti?
 \section{Conclusion}
 
+% O nekim stvarima tipa alphabet-independent, stability, scalability etc. pricam prvi put u zakljucku. 
+% Da li ih pisati ranije i gre?
 In this paper, we present a conceptually simple yet powerful method, by which we were able to increase the precision of the base neural network up to $2.7\%$. 
 The proposed method exhibits many positive properties, such as stability 
 (in terms of showing good performance with multiple independent evaluations) and scalability (in terms of improving performance with more data), 
@@ -515,7 +517,7 @@ which makes it suitable for installation on smaller devices, which again qualifi
 
 The main contribution of this paper is the development of a new method that uses basic algorithms and machine learning techniques such as K-means clustering 
 and K nearest neighbor classification, which outperforms the performance of leading classifiers of offline handwritten text. 
-The proposed model of improuvement at the time of use of the base classifier provides prediction by combining the prediction of the base classifier 
+The proposed model of improvement at the time of use of the base classifier provides prediction by combining the prediction of the base classifier 
 with the predictions of a series of auxiliary classifiers. 
 This delegates decision making, thus creating space to isolate the handwriting style of each user. 
 It is important to note that our work is based on learning the writing style of individual users and is the first work of this kind. 
@@ -526,9 +528,6 @@ Future research may include meta-learning and few-shot learning techniques to pr
 
 % Negde gore komentarisati kako i zasto smo koritili Beta raspodelu da kazem zbog konjigate priors i sl.?
 % Citirati rad sem iz NI? 
-% Srediti po ugledu na emnist preprocessing section
-% eliminisi redundantnost podataka
-% STA CU SA REZULTATIMA NA NISTU I DEEPWRITINGU DA IH POMINJEM ILI NE, AKO DA GDE?
 \small
 
 \begin{thebibliography}{99} 
