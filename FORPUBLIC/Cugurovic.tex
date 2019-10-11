@@ -83,7 +83,7 @@ Neural Classifier of Handwritten Text to Individual Users}
 
 \begin{abstract}
   In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. In the adjustment phase, performed on the user side, an ensemble of alternative k-nn classifiers with a ligthweight Bayesian selection mechanism is constructed to identify specific writing style of the user for each character. Essentially, the ensemble construction mechanism we propose can be seen as an automated error-space analysis of the base CNN which is used for correction of its decision making.
-  We tested our method on two relevant real-world datasets -- NIST Special Database 19 and ETH Zurich Deepwriting dataset. We achieve up to 2.7\% improvement in classification precision and get state of the art results on these datasets.
+  We tested our method on two relevant real-world datasets -- NIST Special Database 19 and ETH Zurich Deepwriting dataset. We achieve up to 2.7\% improvement in classification accuracy and get state of the art results on these datasets.
 \end{abstract}
 
 \section{Introduction}
