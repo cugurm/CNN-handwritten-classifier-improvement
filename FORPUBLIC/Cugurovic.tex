@@ -82,41 +82,41 @@ Neural Classifier of Handwritten Text to Individual Users}
 \maketitle
 
 \begin{abstract}
-  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. In the adjustment phase, performed on the user side, an ensemble of alternative k-nn classifiers with a ligthweight Bayesian selection mechanism is constructed to identify specific writing style of the user for each character. Essentially, the ensemble construction mechanism we propose can be seen as an automated error-space analysis of the base CNN which is used for correction of its decision making.
+  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. In the adjustment phase, performed on the user side, user's writing style for different characters is determined by tracking their writing and corrections of recognitions offered by the base CNN. This information is exploited by an ensemble of alternative k-nn classifiers with a lightweight Bayesian selection mechanism which learns when to correct the base CNN. Essentially, the ensemble construction mechanism we propose can be understood as an automated error-space analysis of the base CNN which is used for correction of its decision making.
   We tested our method on two relevant real-world datasets -- NIST Special Database 19 and ETH Zurich Deepwriting dataset. We achieve up to 2.7\% improvement in classification accuracy and obtain state of the art results on these datasets.
 \end{abstract}
 
 \section{Introduction}
-The problem of automatic recognition of offline handwritten characters is a very practical problem, which is a part of the area of pattern recognition.
-Inspired by practical use, it develops both within academia as well as within the industrial sector.
-The industrial sector directly commercializes solutions to this problem by including them into devices like tablets, smartphones and the like.
-Cause of that it is very important to have precise classifiers that rarely make mistakes.
+The problem of automatic recognition of offline handwritten characters is a very practical pattern recognition problem. Solutions to this problem are directly commercialized  by deployment in devices like tablets and smartphones.
+Accuracy of employed classifiers has significant impact to the user experience, which is of critical importance for the industry, since it can be a decisive factor for technology adoption.
+Therefore, motivated by its practical importance, its solutions were advanced both within academia and industry.
 
-The pioneering attempt to automatically recognize handwritten characters dates back to the 1950s \citet{leedham}.
-After this initial attempt, a few a group of researchers worked independently on this problem \citet{plamondon}.
-Within the software and hardware limitations of that time, remarkable results were achieved.
-In the last ten years, the intensive development of neural networks has led to a shift in boundaries in many areas,
-including in the area of offline handwriting recognition.
-The results achieved by using convolutional neural networks exceed the results of all methods developed up to then \citet{cnnbest1} \citet{cnnbest2} \citet{cnnbest3}.
-Additionally, convolutional neural networks are also used as parts of complex systems that deal with the recognition of offline handwritten characters,
-mainly as the powerful feature extractors \citet{cnnrelated1} \citet{cnnrelated2} \citet{cnnrelated3}.
+The pioneering attempt to automatically recognize handwritten characters dates back to the 1950s \citep{leedham}.
+After this initial attempt, different groups of researchers worked on this problem for decades \citep{plamondon}.\marginpar{Uz ovakvu recenicu mora vise referenci iz razlicitih vremenskih perioda. Potrazi.}
+Within the software and hardware limitations of the time, remarkable results were achieved.
+In the last ten years, the intensive development of neural networks has led to a shift of boundaries in many areas,
+including the area of offline handwriting recognition.
+The results achieved by using convolutional neural networks exceed the results of all methods developed up to then \citep{cnnbest1,cnnbest2,cnnbest3}.
+\marginpar{Svuda: koristi citep kada dajes referencu za samostalno zaokruzenu tvrdnju. Takodje, grupisi vise referenci u jedne zagade. Koristi citet kada koristis referencu kao imenicu unutar recenice. Ja sam izmenio na par mesta, proveri ostala.}
+Convolutional neural networks are also used as parts of complex systems that deal with the recognition of offline handwritten characters,
+mainly as the powerful feature extractors \citep{cnnrelated1,cnnrelated2,cnnrelated3}.
+\marginpar{Nije bas jasno sta je razlika izmedju toga da mreze prepoznaju tekst i da su deo slozenih sistema koji se ticu prepoznavanja teksta. Pojasni.}
 
-Although convolutional neural networks have significantly increased offline handwriting classification accuracy, there is still plenty of room for progress.
-In this paper, we presented a fast, alphabet-independent and scalable method that improves pretrained CNN without its retraining.
-%The new approach is based on the idea of knowing the character writing style each of the individual users and adjusting pretrained CNN to each of them.
-%Previous was accomplished by dynamic monitoring both of CNNs mistakes and successful predictions.
-%The main goal of this paper is to increase the precision of convolution neural networks created and trained for the purpose of classification of handwritten characters.
-%The improvement presented in this paper is based on the fact that handwriting style is something unique for each individual, or something that largely identifies it.
-% The classifier improvement is based on the dynamic monitoring of both his mistakes and successful predictions.
+Although employment of convolutional neural networks has significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. One way to improve handwriting recognition accuracy is to gather more data or use better models so that the model performs better on average over a large population of users, which was the main direction of previous efforts. Another one is to enable model's adaptation to the specifics of handwriting of a single user
+\cite{}.\marginpar{Milane, dodaj reference na ovakve pristupe.}
+In this paper, we presented a fast, alphabet-independent and scalable method that improves pretrained CNN without its retraining. Therefore, the improvement mechanism is easily deployed on user's device without requirements for specialized deep learning hardware or software. Also, no user data needs to be
+transferred to the server. That way, potential issues regarding user privacy are avoided.
+  
+The proposed approach uses a so called base CNN which is trained on the server side, on a large dataset of labeled hand written character samples, as in most CNN based approaches. Besides the base CNN, for each character, several writing styles are defined by clustering, each cluster representing a distinct style. Clustering is performed over character embeddings learned by the CNN. The improvement method, running on the client side, can be understood as an automated error-space analysis of the base CNN, which is used for correction of its decision making. In the adjustment phase, user's writing style for different characters is determined by tracking their writing and corrections of recognitions offered by the base CNN. This information is exploited by an ensemble of alternative k-nn classifiers with a lightweight Bayesian selection mechanism which learns when to correct the base CNN.
 
-The new approach is based on the idea of knowing the character's writing style each of the individual users.
-Presented improvement of pretrained offline handwriting CNN classifier is based on the dynamic monitoring of both his mistakes and successful predictions.
-By this monitoring, we created the so-called user writing history.
-Based on user writing history, a set of several models of KNN classifiers is formed, for different values of $k$ and the reliability of both the base classifier and these models is evaluated (in a principled way, which will be described later).
-Based on these ratings, the method decides which one label to anticipate.
+The main points of our work are the following:
+\begin{itemize}
+\item We propose a new method for adjusting a CNN based system for offline hand writing recognition to the writing style of a specific user and achieve up to 2.7\% improvement in classification accuracy on two relevant real-world datasets.
+\item The proposed method is lightweight on the clinet side and does not require specialized deep learning hardware or libraries.
+\item The proposed method is privacy preserving, as it does not require any transfer of user's data to the server.
+\end{itemize}
 
-In this paper, Section 2 describes work related to this problem while the proposed method is fully described in Section 3.
-Section 4 provides experimental results, and conclusions are given in Section 5.
+The rest of the paper is organized as follows. Section 2 describes related work. The proposed method is fully described in Section 3. Section 4 provides experimental results. Conclusions are drawn in Section 5.
 
 \section{Related work}  % Da li treba da izgleda "malo standardnije"?
 
