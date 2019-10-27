@@ -82,28 +82,38 @@ Neural Classifier of Handwritten Text to Individual Users}
 \maketitle
 
 \begin{abstract}
-  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. In the adjustment phase, performed on the user side, user's writing style for different characters is determined by tracking their writing and corrections of recognitions offered by the base CNN. This information is exploited by an ensemble of alternative k-nn classifiers with a lightweight Bayesian selection mechanism which learns when to correct the base CNN. Essentially, the ensemble construction mechanism we propose can be understood as an automated error-space analysis of the base CNN which is used for correction of its decision making.
-  We tested our method on two relevant real-world datasets -- NIST Special Database 19 and ETH Zurich Deepwriting dataset. We achieve up to 2.7\% improvement in classification accuracy and obtain state of the art results on these datasets.
+  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing 
+  style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in 
+  a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, 
+  performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. 
+  In the adjustment phase, performed on the user side, user's writing style for different characters is determined by tracking their writing and corrections of 
+  recognitions offered by the base CNN. This information is exploited by an ensemble of alternative k-nn classifiers with a lightweight Bayesian selection mechanism 
+  which learns when to correct the base CNN. Essentially, the ensemble construction mechanism we propose can be understood as an automated error-space analysis of 
+  the base CNN which is used for correction of its decision making.
+  We tested our method on two relevant real-world datasets -- NIST Special Database 19 and ETH Zurich Deepwriting dataset. 
+  We achieve up to 2.7\% improvement in classification accuracy and obtain state of the art results on these datasets.
 \end{abstract}
 
 \section{Introduction}
-The problem of automatic recognition of offline handwritten characters is a very practical pattern recognition problem. Solutions to this problem are directly commercialized  by deployment in devices like tablets and smartphones.
-Accuracy of employed classifiers has significant impact to the user experience, which is of critical importance for the industry, since it can be a decisive factor for technology adoption.
-Therefore, motivated by its practical importance, its solutions were advanced both within academia and industry.
+The problem of automatic recognition of offline handwritten characters is a very practical pattern recognition problem. Solutions to this problem are directly commercialized  by deployment in devices like tablets and smartphones. 
+Accuracy of employed classifiers has significant impact to the user experience, which is of critical importance for the industry, since it can be a decisive factor for technology adoption. 
+Therefore, motivated by its practical importance, its solutions were advanced both within academia and industry. 
 
 The pioneering attempt to automatically recognize handwritten characters dates back to the 1950s \citep{leedham}.
-After this initial attempt, different groups of researchers worked on this problem for decades \citep{plamondon}.\marginpar{Uz ovakvu recenicu mora vise referenci iz razlicitih vremenskih perioda. Potrazi.}
+After this initial attempt, different groups of researchers worked on this problem for decades \citep{hist1, hist2, hist3, hist4, hist5, plamondon}. 
 Within the software and hardware limitations of the time, remarkable results were achieved.
 In the last ten years, the intensive development of neural networks has led to a shift of boundaries in many areas,
 including the area of offline handwriting recognition.
-The results achieved by using convolutional neural networks exceed the results of all methods developed up to then \citep{cnnbest1,cnnbest2,cnnbest3}.
-\marginpar{Svuda: koristi citep kada dajes referencu za samostalno zaokruzenu tvrdnju. Takodje, grupisi vise referenci u jedne zagade. Koristi citet kada koristis referencu kao imenicu unutar recenice. Ja sam izmenio na par mesta, proveri ostala.}
+The results achieved by using convolutional neural networks exceed the results of all methods developed up to then \citep{cnnbest1, cnnbest3, cnnbest4, cnnbest2, cnnbest5}. 
 Convolutional neural networks are also used as parts of complex systems that deal with the recognition of offline handwritten characters,
-mainly as the powerful feature extractors \citep{cnnrelated1,cnnrelated2,cnnrelated3}.
-\marginpar{Nije bas jasno sta je razlika izmedju toga da mreze prepoznaju tekst i da su deo slozenih sistema koji se ticu prepoznavanja teksta. Pojasni.}
+mainly as the powerful feature extractors. 
+In such systems, the classification task is performed by alternative classifiers, who instead of working with the raw images, 
+make their decisions based on a new set of attributes produced by the convolutional network \citep{cnnrelated1,cnnrelated2,cnnrelated3}. \marginpar{Da li je okej pojasnjenje?}
 
-Although employment of convolutional neural networks has significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. One way to improve handwriting recognition accuracy is to gather more data or use better models so that the model performs better on average over a large population of users, which was the main direction of previous efforts. Another one is to enable model's adaptation to the specifics of handwriting of a single user
-\cite{}.\marginpar{Milane, dodaj reference na ovakve pristupe.}
+Although employment of convolutional neural networks has significantly increased offline handwriting classification accuracy, there is still plenty of room for progress. 
+One way to improve handwriting recognition accuracy is to gather more data \citep{augment1, augment} or use better models so that the model performs better on average over a large population of users, 
+which was the main direction of previous efforts. Another one is to enable model's adaptation to the specifics of handwriting of a single user
+\citep{custom3, custom2, custom1, nist5, custom4, custom5}. 
 In this paper, we presented a fast, alphabet-independent and scalable method that improves pretrained CNN without its retraining. Therefore, the improvement mechanism is easily deployed on user's device without requirements for specialized deep learning hardware or software. Also, no user data needs to be
 transferred to the server. That way, potential issues regarding user privacy are avoided.
   
@@ -122,32 +132,56 @@ The rest of the paper is organized as follows. Section 2 describes related work.
 
 This section provides background about improving offline handwritten character recognition.
 In addition, an overview of the results achieved so far on the datasets we use is given.
-% CNN rezultati generalno - dodato u introduction
+% Izbaceni delovi:
 % Due to their properties, convolutional neural networks are one of the leading classification mechanisms by which many problems of computer vision are solved.
 % In the area of offline handwriting character recognition CNN achieves some of the state-of-the-art results.
+% In terms of publications related to improving offline handwritten character recognition,
+% there are only a few of them that tend to improve the offline handwritten text classifier. 
+%However, the method presented in it doesn't focus on the writing style of the individual users, which is the basic idea that motivated our improvement method. 
 
-% Metodi poboljsanja generalno - nema ih!
-In terms of publications related to improving the offline handwritten character recognition,
-there is only one paper that tends to improve the offline handwritten text classifier.
-However, the method presented in it doesn't focus on the writing style of the individual users, which is the basic idea that motivated our improvement method.
-The aforementioned publication \citet{nist5} propose a smaller augmenting network that can be re-trained on user device using his own data. %Using the smaller engine allows customization of large base network without losing generality.
+Adapting classifiers to each of the individual users is a relatively old idea that can be applied not only to CNNs but to other offline handwritten text classifiers 
+as well as on online handwritten text recognizers \citep{adapt3, adapt2, adapt7}. 
+The most common approach to writer adaptation for Gaussian Mixture Hidden Markov Models is the Maximum Likelihood Regression, 
+which was used to fine-tune the means and variances used in HMMs \citep{adapt1, adapt4}. 
+\citet{adapt6} show that they can adapt the HMM-based recognition engine even when using less than $30$ word samples. 
+They estimated that $200$ words was the lower bound for training from scratch (solely on the writers words) to produce better results than adjusting a pretrained model. 
+\citep{adapt5} propose a method of prototype integration for writer adaptation in which they use an iterative bootstrapping model that adapts a writer-independent model to a writer-dependent one. 
+They also used a conventional HMM recognition engine. 
+
+\citet{nosary1, nosary2, nosary3} propose the adaptation principle which was based on automatic learning of the handwriting graphical characteristics, 
+which was inspired by human contextual effects that influence the visual word recognition and which focus on the redundant elementary patterns extracted 
+from each user's handwriting. They store their system recognition output and use it as an additional training data at a later stage, as recognition progressed. 
+
+The aforementioned publications \citet{custom1, nist5} propose a smaller augmenting network that can be re-trained on user device using his own data. %Using the smaller engine allows customization of large base network without losing generality.
 A coarse-grained reconfigurable array processor was used to reduce the energy required for network retraining.
+In addition to this work, there is a whole series of papers dealing with the effective retraining of the base neural classifier \citep{custom2, custom4}. 
+
+Recently, ways have been developed to adapt the neural network classifiers to the handwriting of the individual users. 
+\citet{cnn0} propose a style transfer mapping (STM) as a closed-form writer-specific and class-independent feature transformation which the data of different writers project onto a style-free space 
+with a goal to reduce the impact of handwriting style variation among different persons. 
+\citet{cnn1, cnn2} combine the aforementioned STM with the base CNN classifier in an unsupervised fashion by using pseudo-labels which were generated by the base classifier. 
+They integrate the previous by adding an adaptation layer to pretrained CNN, which weights was tuned during the adaptation process. 
+For training the adaptation layer, they used the modified STM learning technology. 
+\citet{cnn3} propose innovative writer code based adaptation of the DNN-HMM for furthermore accuracy improuvement via a personalized recognizer. 
+\citet{cnn4} introduced a novel adversarial feature learning model (AFL) which tends to improve handwritten character recognizer 
+by focusing on the features of standard printed and handwritten characters. 
+
 A standard way to improve the performance of a set of classifiers is to integrate them using bagging, voting and other stacking techniques.
-Here we mention papers of this type, although this is not essentially a work on improving a particular classifier \citet{imp1} \citet{imp2} \citet{imp3}.
+Here we mention papers of this type, although this is not essentially a work on improving a particular classifier \citep{imp3, imp1, imp2}.
 
 % NIST rezultati
 On the NIST dataset, several independent groups of researchers have published papers with different classification algorithms.
-A committee of seven CNNs obtains a precision of $88.12\%$ \citet{nist1}.
+A committee of seven CNNs obtains a precision of $88.12\%$ \citep{nist1}.
 For committee forming training is conducted both on the original and six preprocessed datasets
 (preprocessing is motivated by the purpose of handling different aspect ratios of the handwritten characters).
-Using a multicolumn deep neural network a precision of $88.37\%$ was achieved \citet{nist2}.
+Using a multicolumn deep neural network a precision of $88.37\%$ was achieved \citep{nist2}.
 This architecture was motivated by biological ideas, forcing sparsely connected neural layers like in a mammal's brain.
 Combining a convolutional neural network as a feature extractor and (linear) support vector machines as a classifier,
-an efficient method for improving the convolutional neural network is presented \cite{nist3}.
+an efficient method for improving the convolutional neural network is presented \citep{nist3}.
 By using the methods of k nearest neighbors, bagging and random forest classifier, a cheap feature selection algorithm was developed,
-and precision around $75\%$ was achieved \citet{nist4}.
+and precision around $75\%$ was achieved \citep{nist4}.
 Recently, on-device user customization of CNN which implies retrain of smaller augmenting network is proposed,
-showing a 3.5-fold reduction of the prediction error after doing user customization \citet{nist5}.
+showing a 3.5-fold reduction of the prediction error after doing user customization \citep{nist5}.
 
 % Deepwriting rezultati
 There are currently no published results of the classification problem on the Deepwriting dataset.
@@ -198,12 +232,12 @@ The main idea that motivated this step of the improvement method is the assumpti
 %By averaging such characters, we expect that variation in writing will annul, and this again leads to a crystallization of the style (the way in which the author writes that character).
 We clustered images of the training set for the base classifier and validation set for the base classifier.
 
-We used the output of the next-to-last layer of the base CNN classifier as a set of attributes that characterize a handwritten character image \citet{nexttolast}.
+We used the output of the next-to-last layer of the base CNN classifier as a set of attributes that characterize a handwritten character image \citep{nexttolast}.
 The next-to-last layer of the neural network gives representations of the input images in some new attribute space in which we expect the different characters to be well separated,
 while the last layer of the neural network only plays the role of labeling over those representations.
-Therefore, the last layer of the network is cut off, and for the set of attributes that describe the image from the input we used the values of the neurons of the next-to-last CNN layer \citet{style1} \citet{style2}.
+Therefore, the last layer of the network is cut off, and for the set of attributes that describe the image from the input we used the values of the neurons of the next-to-last CNN layer \citep{style1, style2}.
 
-Due to the nature of our data, we used the K-means clustering algorithm \citet{kmeans}.
+Due to the nature of our data, we used the K-means clustering algorithm \citep{kmeans}.
 Cluster centroids will represent the writing styles of the clustered character.
 The number of clusters for each label is given by the formula:
 \begin{equation}
@@ -304,11 +338,11 @@ More information about them is given below.
 
 \subsubsection{NIST Special Database 19}
 
-The NIST Special Database 19 \citet{nist} contains handwritten characters collected from slightly less than $3600$ authors in the approximately $810,000$ images,
+The NIST Special Database 19 \citep{nist} contains handwritten characters collected from slightly less than $3600$ authors in the approximately $810,000$ images,
 scanned from the appropriate forms, along with the corresponding labels.
 In addition, the database contains reference forms for possible further data collection and software tools for working with them.
 
-The first version of this database was published as CD-ROM \citet{nistv0}, and then re-released using a modern file format \citet{nist}.
+The first version of this database was published as CD-ROM \citep{nistv0}, and then re-released using a modern file format \citep{nist}.
 The dataset contains binarized images created from $3669$ forms and contains segmented, manually classified handwritten letters and numbers.
 These characters are presented as monochromatic images of $128 \times 128$ resolution while labeled with one of the 62 ASCII classes corresponding to the English alphabet characters and Arabic numerals.
 The database is structured in five different ways, hierarchically organized according to different criteria.
@@ -318,12 +352,12 @@ Detailed information about dataset are given in the table \ref{table1}.
 
 \subsubsection{ETH Zurich Deepwriting Database}
 
-The ETH Zurich Deepwriting Database\cite{deepwriting} contains handwritten text annotated at the level of sentences, words and individual characters.
+The ETH Zurich Deepwriting Database\citep{deepwriting} contains handwritten text annotated at the level of sentences, words and individual characters.
 About $300$ authors wrote around $400,000$ characters.
 
-It was created as an upgrade of the existing IAM Handwriting database \citet{iam}, which is here labeled at the level of individual characters.
+It was created as an upgrade of the existing IAM Handwriting database \citep{iam}, which is here labeled at the level of individual characters.
 In addition to the data in this database, new data were collected with the help of web tools developed for iPod Pro.
-New authors, 94 of them, wrote the text Lancaster-Oslo-Bergen (LOB) \citet{lob}, since the authors in IAM Database also wrote that text.
+New authors, 94 of them, wrote the text Lancaster-Oslo-Bergen (LOB) \citep{lob}, since the authors in IAM Database also wrote that text.
 Characters in the database were initially given as online handwritten characters.
 In addition to the data, the authors provided software that could be transform database to offline variant.
 Based on the software provided, offline character images were created.
@@ -354,7 +388,7 @@ Detailed information about dataset are given in the table \ref{table1}.
 % Da li je potrebno objasniti zasto smo uspesni na NISTU a samo 3.65 je prosek?
 \subsection{Images preprocessing}
 
-On both datasets preprocessing was inspired by the famous MNIST dataset \citet{mnist} and it was modeled on the work that describes the creation of the EMNIST dataset \citet{emnist}.
+On both datasets preprocessing was inspired by the famous MNIST dataset \citep{mnist} and it was modeled on the work that describes the creation of the EMNIST dataset \citep{emnist}.
 In the mentioned paper, the conversion process consists of the following steps, in sequence:
 blurring images using Gaussian filter, cropping the character from the image, centering the previously extracted character, and resizing the image into a $28 \times 28$ pixel frame.
 Unlike the mentioned publication, we first cut the original image whereby the size of the margin around the character is set to one pixel.
@@ -413,7 +447,7 @@ On this basis, it is realistic to expect an even better system behavior in the c
 
 \subsection{Base CNN classificator}
 
-The base classifier whose improvement is presented in this paper is a convolutional neural network based on the \textit{Caffe} architecture \citet{caffe}.
+The base classifier whose improvement is presented in this paper is a convolutional neural network based on the \textit{Caffe} architecture \citep{caffe}.
 
 \subsubsection{Architecture}
 
@@ -435,7 +469,7 @@ The basic neural classifier was trained by the Adam optimization method with par
 
 In the case of the NIST dataset, the base classifier was trained in $35$ epochs in three series of $20$, $10$ and $5$ epochs each.
 Each successive series uses a larger batch size.
-This kind of training is inspired by the actual work in this area \citet{lrbs}.
+This kind of training is inspired by the actual work in this area \citep{lrbs}.
 The results achieved by the base classifier on the NIST dataset are $88.36\%$, $87.39\%$ and $87.35\%$ respectively on the training set for the base classifier, validation set for the base classifier and application set.
 
 The base classifier on the Deepwriting dataset was trained for 20 epochs, after which training was stopped by the early stopping technique.
@@ -537,6 +571,16 @@ Future research may include meta-learning and few-shot learning techniques to pr
   \bibitem[C.G. Leedham (1994)]{leedham} C.G. Leedham \ (1994) Historical perspectives of handwriting recognition systems
   In {\itshape IEE Colloquium on Handwriting and Pen-Based Input}: 1-3
 
+  \bibitem[Dimond (1957)]{hist1} T. L. Dimond. \ (1957) \ Devices for reading handwritten characters.  In papers and discussions presented at the December 9-13, 1957, eastern joint computer conference: Computers with deadlines to meet (IRE-ACM-AIEE '57 (Eastern)). ACM, New York, NY, USA,  232-237. DOI=http://dx.doi.org/10.1145/1457720.1457765
+
+  \bibitem[Eden (1962)]{hist2} M. Eden \ (1962) \ "Handwriting and pattern recognition," in IRE Transactions on Information Theory, vol. 8, no. 2, pp. 160-166, February 1962. doi: 10.1109\/TIT.1962.1057695
+  
+  \bibitem[Crane et al. (1975)]{hist3} Crane, Hewitt David \& Robert Ellis Savoie \ (1975) "Special pen and system for handwriting recognition." U.S. Patent No. 3,906,444. 16 Sep. 1975.
+
+  \bibitem[Davis et al. (1986)]{hist4} Davis, Robert H. \& J. Lyall \ (1986) \ "Recognition of handwritten characters—a review." Image and Vision Computing 4.4: 208-218.
+
+  \bibitem[Bozinovic et al. (1989)]{hist5} Bozinovic, Radmilo M. \& Sargur N. Srihari. \ (1989) \ "Off-line cursive script word recognition." IEEE Transactions on Pattern Analysis and Machine Intelligence 1: 68-83.
+
   \bibitem[Plamondon et al. (2000)]{plamondon} Plamondon, R., \ \& Srihari, S.N.\ (2000).
   On-Line and Off-Line Handwriting Recognition: A Comprehensive Survey. IEEE Trans. Pattern Anal. Mach. Intell., 22, 63-84.
 
@@ -545,6 +589,10 @@ Future research may include meta-learning and few-shot learning techniques to pr
   \bibitem[Pavarez et al. (2013)]{cnnbest2} Parvez, Mohammad \&  Mahmoud, Sabri. \ (2013). Offline Arabic Handwritten Text Recognition: A Survey. ACM Computing Surveys (CSUR). 45. 10.1145/2431211.2431222.
 
   \bibitem[Awaida et al. (2012)]{cnnbest3} Awaida, Sameh \& Mahmoud, Sabri. \ (2012). State of the art in off-line writer identification of handwritten text and survey of writer identification of Arabic text. Educational Research and Reviews. 7. 10.5897/ERR11.303.
+
+  \bibitem[Yuan et al. (2012)]{cnnbest4} Yuan, A. \& Bai, G. \& Jiao, L. \& Liu, Y. \ (2012, March) \ Offline handwritten English character recognition based on convolutional neural network. In 2012 10th IAPR International Workshop on Document Analysis Systems (pp. 125-129). IEEE.
+
+  \bibitem[Poznanski et al. (2016)]{cnnbest5} Poznanski, A. \& Wolf, L. \ (2016) Cnn-n-gram for handwriting word recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 2305-2314).
 
   \bibitem[Fiel et al. (2015)]{nexttolast} Fiel, Stefan \& Sablatnig, Robert. \ (2015). Writer Identification and Retrieval Using a Convolutional Neural Network. 26-37. 10.1007/978-3-319-23117-4\_3.
 
@@ -592,6 +640,51 @@ Future research may include meta-learning and few-shot learning techniques to pr
   \bibitem[Mahreen et al. (2017)]{imp2} Ahmed, Mahreen \& Rasool, Asma \& Afzal, Hammad \& Siddiqi, Imran. \ (2017). "Improving Handwriting based Gender Classification using Ensemble Classifiers." Expert Systems with Applications. 85. 10.1016\/j.eswa.2017.05.033.
 
   \bibitem[Ramy et al. (2009)]{imp3} Mohamad, Ramy \& Likforman-Sulem, Laurence \& Mokbel, Chafic. \ (2009). "Combining Slanted-Frame Classifiers for Improved HMM-Based Arabic Handwriting Recognition." IEEE transactions on pattern analysis and machine intelligence. 31. 1165-77. 10.1109\/TPAMI.2008.136.
+
+  \bibitem[Sivan (2019)]{augment} Keret, Sivan \ (2019) \ “Transductive Learning for Reading Handwritten Tibetan Manuscripts.”
+
+  \bibitem[Wigington et al. (2017)]{augment1} C. Wigington \& S. Stewart \& B. Davis \& B. Barrett \& B. Price \& S. Cohen \ (2017) \ "Data Augmentation for Recognition of Handwritten Words and Lines Using a CNN-LSTM Network," 2017 14th IAPR International Conference on Document Analysis and Recognition (ICDAR), Kyoto, 2017, pp. 639-645. doi: 10.1109\/ICDAR.2017.110
+  
+  % Related work (new)
+  \bibitem[Barend et al. (2018)]{custom1} Harris, Barend \& Moghaddam, Mansureh S \& Kang, Duseok \& Bae, Inpyo \& Kim, Euiseok \& Min, Hyemi \& Cho, Hansu \& Kim, Sukjin \& Egger, Bernhard \& Ha, Soonhoi and others \ (2018) "Architectures and algorithms for user customization of CNNs." Proceedings of the 23rd Asia and South Pacific Design Automation Conference. IEEE Press, 2018.
+
+  \bibitem[Boyu et al. (2018)]{custom2} Zhang, Boyu \& Azadeh Davoodi \& Yu-Hen Hu. \ (2018) \ "A Mixture of Expert Approach for Low-Cost Customization of Deep Neural Networks." arXiv preprint arXiv:1811.00056 (2018).
+
+  \bibitem[Xu et al. (2015)]{custom3} Zhang, Xu \& Yu, Felix Xinnan \& Chang, Shih-Fu \& Wang, Shengjin \ (2015) \ "Deep transfer network: Unsupervised domain adaptation." arXiv preprint arXiv:1503.00591.
+
+  \bibitem[Choi et al. (2019)]{custom4} Seungkyu Choi \& Jaekang Shin \& Yeongjae Choi \& Lee-Sup Kim (2019) \ "An Optimized Design Technique of Low-bit Neural Network Training for Personalization on IoT Devices." In Proceedings of the 56th Annual Design Automation Conference 2019 (DAC '19). ACM, New York, NY, USA, Article 191, 6 pages. DOI: https://doi.org/10.1145/3316781.3317769
+
+  \bibitem[Yann et al. (2019)]{custom5} Soullard Yann \& Wassim Swaileh \& Pierrick Tranouez \& Thierry Paquet \& Clément \& Châtelain \ (2019) \ “Improving text recognition using optical and language model writer adaptation.” (2019).
+
+  \bibitem[Prasad et al. (2010)]{adapt1} Prasad, Rohit \& Bhardwaj, Anurag \& Subramanian, Krishna \& Cao, Huaigu \& Natarajan, Premkumar \ (2010) \ "Stochastic Segment Model Adaptation for Offline Handwriting Recognition." 1993-1996. 10.1109\/ICPR.2010.491. 
+
+  \bibitem[Hidetoshi et al. (2009)]{adapt2} Miyao, Hidetoshi \& Maruyama, Minoru \ (2009) \ "Writer Adaptation for Online Handwriting Recognition System Using Virtual Examples." 1156-1160. 10.1109\/ICDAR.2009.174. 
+
+  \bibitem[Connell et al. (2002)]{adapt3} S. D. Connell \&  A. K. Jain \ (2002) \ "Writer adaptation for online handwriting recognition," in IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 24, no. 3, pp. 329-346, March 2002. doi: 10.1109\/34.990135
+
+  \bibitem[Kozielski et al. (2013)]{adapt4} Kozielski, Michal \& Doetsch, Patrick \& Ney, Hermann \ (2013) \ "Improvements in RWTH's System for Off-Line Handwriting Recognition." Proceedings of the International Conference on Document Analysis and Recognition, ICDAR. 935-939. 10.1109\/ICDAR.2013.190. 
+
+  \bibitem[Ball et al. (2008)]{adapt5} Ball, Gregory \& Srihari, Sargur \ (2008) \ "Prototype Integration in Off-Line Handwriting Recognition Adaptation"
+
+  \bibitem[Nosary et al. (2004)]{nosary3} Nosary, Ali \& Heutte, Laurent \& Paquet, Thierry \ (2004) \ "Unsupervised writer adaptation applied to handwritten text recognition." Pattern Recognition. 37. 385-388. 10.1016\/S0031-3203(03)00185-7. 
+
+  \bibitem[Nosary et al. (2002)]{nosary2} Nosary, Ali \& Paquet, Thierry \& Heutte, Laurent \& Bensefia, Ameur \ (2002) \ "Handwritten text recognition through writer adaptation." Proceedings - International Workshop on Frontiers in Handwriting Recognition, IWFHR. 363 - 368. 10.1109\/IWFHR.2002.1030937. 
+
+  \bibitem[Nosary et al. (1999)]{nosary1} Nosary, Ali \& Heutte, Laurent \& Paquet, Thierry \& Lecourtier, Yves \ (1999) \ "Defining Writer's Invariants to Adapt the Recognition Task" 765-768. 10.1109\/ICDAR.1999.791900. 
+
+  \bibitem[Vinciarelli et al. (2002)]{adapt6} Vinciarelli, Alessandro \& Bengio, Samy \ (2002) \ "Writer adaptation techniques in HMM based Off-Line Cursive Script Recognition." Pattern Recognition Letters. 23. 905-916. 10.1016\/S0167-8655(02)00021-1. 
+
+  \bibitem[Yang et al. (2018)]{adapt7} Yang, Hong-Ming \& Zhang, Xu-Yao \& Yin, Fei \& Sun, Jun \& Liu, Cheng-Lin \ (2018) \ "Deep Transfer Mapping for Unsupervised Writer Adaptation." 2018 16th International Conference on Frontiers in Handwriting Recognition (ICFHR). IEEE, 2018.
+
+  \bibitem[Yang et al. (2018)]{cnn1} H. Yang \& X. Zhang \& F. Yin \& J. Sun \& C. Liu \ (2018) \ "Deep Transfer Mapping for Unsupervised Writer Adaptation," 2018 16th International Conference on Frontiers in Handwriting Recognition (ICFHR), Niagara Falls, NY, 2018, pp. 151-156.
+
+  \bibitem[Yang et al. (2016)]{cnn2} H. Yang \& X. Zhang \& F. Yin \& Z. Luo \& C. Liu \ (2016)  "Unsupervised Adaptation of Neural Networks for Chinese Handwriting Recognition," 2016 15th International Conference on Frontiers in Handwriting Recognition (ICFHR), Shenzhen, 2016, pp. 512-517. doi: 10.1109\/ICFHR.2016.0100
+
+  \bibitem[Wang et al. (2016)]{cnn3} Z. Wang \& J. Du \ (2016) \  "Writer Code Based Adaptation of Deep Neural Network for Offline Handwritten Chinese Text Recognition," 2016 15th International Conference on Frontiers in Handwriting Recognition (ICFHR), Shenzhen, 2016, pp. 548-553. doi: 10.1109\/ICFHR.2016.0106
+
+  \bibitem[Zhang et al. (2018)]{cnn4} Yaping Zhang \& Shan Liang \& Shuai Nie \& Wenju Liu \& Shouye Peng \ (2018) \ "Robust offline handwritten character recognition through exploring writer-independent features under the guidance of printed data", Pattern Recognition Letters, Volume 106, 2018, Pages 20-26, ISSN 0167-8655, https://doi.org/10.1016/j.patrec.2018.02.006.
+
+  \bibitem[Xu-Yao et al. (2013)]{cnn0} Zhang, Xu-Yao \& Liu, Cheng-Lin \ (2013) \ "Writer Adaptation with Style Transfer Mapping." IEEE transactions on pattern analysis and machine intelligence. 35. 1773-87. 10.1109\/TPAMI.2012.239. 
 \end{thebibliography}
 
-\end{document} 
+\end{document}
