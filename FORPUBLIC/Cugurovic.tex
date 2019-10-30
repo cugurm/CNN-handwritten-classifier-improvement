@@ -26,7 +26,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-\title{Learning the Way We Write: A Lightweight Automatic Adjustment of %offline
+\title{Learning the Way We Write: A Lightweight Automatic Adaptation of % umesto Adjustment zbog literature
 Neural Classifier of Handwritten Text to Individual Users}
 
 % The \author macro works with any number of authors. There are two commands
@@ -189,7 +189,7 @@ There are currently no published results of the classification problem on the De
 \section{Method}
 
 This section describes the proposed method for improving the CNN classifier of offline handwritten text.
-Note that while the idea behind the learning users handwriting style is rather simple, because of the complexity of the proposed method, we first give it an overview.
+Note that while the idea behind the learning users' handwriting styles is rather simple, because of the complexity of the proposed method, we first give it an overview. 
 
 \subsection{Method overview}
 
@@ -234,7 +234,7 @@ character by individual authors, nevertheless this set of variations is finite.
 %By averaging such characters, we expect that variation in writing will annul, and this again leads to a crystallization of the style (the way in which the author writes that character).
 We clustered images of the training set for the base classifier and validation set for the base classifier. 
 It's important to notice that we used the output of the next-to-last layer of the base CNN classifier as a set of attributes that characterize a handwritten character image \citep{nexttolast}. 
-A sketch of this step of the improvement model is given by:
+A sketch of this step of the improvement method is given by:
 \begin{itemize}
   \item Group images from train and validation set for the base classifier with respect to their labels
   \item Replace each of the images with appropriate output from the next-to-last layer of pretrained CNN classifier
@@ -276,9 +276,9 @@ The process of creating a user's writing history consists of the following: % ov
 \begin{itemize}
   \item For each image of the authors adaptation set: 
   \begin{itemize}
-    \item Let $l_1$ denote the original label and $l_2$ the label provided by the pretrained base CNN; 
+    \item Let $l_1$ denote the label provided by the pretrained base CNN and $l_2$ denote the ground truth label; 
     let $v$ denote the output of the next-to-last layer of the base CNN 
-    \item Among all centroids (writing styles) that correspond to label $l_1$ we found the vector closest to $v$
+    \item Among all centroids (writing styles) that correspond to label $l_2$ we found the vector closest to $v$
     \item We associate the previously founded vector with a pair ($l_1$, $l_2$)
   \end{itemize}
   \item Author's writing history consist of all the ordered pairs ($l_1$, $l_2$) that appeared during the previous passing through images of the adaptation set; 
@@ -301,30 +301,34 @@ on the basis of the output of the next-to-last layer of the base CNN, this order
 Clusters assigned to the same pair may not always be identical.
 We consider their average to be a writing style for a particular character of a particular user.
 
-\subsection{Using user writing history}
-
-A brief outline of the steps taken in a phase of using a user's writing history is provided with: 
-\begin{itemize}
-  \item kreiram writer\_network\_spectar i writer\_knn\_spectars kao nizove B(1,1)
-  \item Za svaku sliku skupa za adaptaciju:
-  \begin{itemize}
-    \item l1, l2, v
-    \item Azuriram writer\_network\_spectar kako?
-    \item Azuriram writer\_knn\_spectar (za svako k) kako?
-  \end{itemize}
-  \item time sam kreirao spektre sa kojima ocenjujem pouzdanost
-  \item Za svaku sliku skupa za primenu:
-  \begin{itemize}
-    \item l1, l2, v
-    \item get list of predictions or each k
-    \item Choose who have biggest mean of all spectars, use it as a aprediction
-    \item UPDATE history AND spectars (skalabilnost)
-  \end{itemize}
-\end{itemize}
+\subsection{Using a user writing history}
 
 After creating users writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify its predictions and change them based on the method K closest neighbors
 which was trained on the mentioned user writing history.
-The method we present, on the history of writing do not create one KNN model for correction, but a series of KNN models, where $k$ taking values $2, 4, 6, 8$ and $10$.
+The method we present, on the user's history of writing do not create one KNN model for correction, but a series of KNN models, where $k$ taking values $2, 4, 6, 8$ and $10$.
+The idea was to use them to improve the behavior of the base pretrained CNN classifier.
+
+A brief outline of the steps taken in a phase of using a user's writing history is provided with: 
+\begin{itemize}
+  \item Create confidence vectors for the base classifier and for the auxiliary classifiers (KNN classifiers for various values of k)
+  \item For each image of the author's adaptation set: 
+  \begin{itemize}
+    \item As before, let $l_1$ denote label predicted by the base CNN classifier, $l_2$ denote the ground truth label, and $v$ denote the output vector of the next-to-last layer of the base CNN for the current image
+    \item Based on labels $l_1$ and $l_2$, update the confidence vector of the base CNN classifier accordingly
+    \item Based on the vector $v$ and the vectors of the user's writing history corresponding to the ordered pairs with the first coordinate of $l_1$, 
+    give a prediction for each of the KNN methods
+    \item For each of the created KNN methods, based on the label $l_2$ and its prediction for the current image, update its confidence vector
+    %ako knn ne moze da predvidi labelu, predvidja ono sto i bazni!
+  \end{itemize}
+  \item Previously going through all the images of the adaptation set the confidence vectors for the base and auxiliary classifiers was set; we use them further
+  \item For each image of the author's test set:
+  \begin{itemize}
+    \item Again, $l_1$ denote CNN predicted label, $l_2$ ground truth label and $v$ net-to-last CNN layer output
+    \item In the same way as for images of the adaptation set, based on the vector $v$ and vectors of users writing history thet correspond to the ordered pairs with the first coordinate of $l_1$, get list of predictions or each of the KNN methods
+    \item Based on $l_1$, confidence vector for the base classifier, previous list of predictions for the KNN methods and their confidence vector choose most confident classifier and use its prediction
+    \item Update user writing history (by information about current image), and update confidence vectors of base CNN and auxiliary classificators based on $l_2$ and their predictions
+  \end{itemize}
+\end{itemize}
 
 Based on the users writing history, a confidence vector of the base classifier and a confidence vectors of the KNN methods are created for each of the previous values of the $k$ parameter.
 The classifier confidence vector is an array of beta distribution expectations, which evaluate the reliability of the classifier when predicting each of the labels.
