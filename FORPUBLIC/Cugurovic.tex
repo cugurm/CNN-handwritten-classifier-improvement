@@ -225,19 +225,28 @@ A more detailed description of each step, as well as an explanation of terms suc
 
 \subsection{Clustering individual character writing styles}
 
-The first step of the proposed method is to cluster the images within sets with the same labels.
-The main idea that motivated this step of the improvement method is the assumption that although there are variations in the ways of writing a particular character by individual authors, nevertheless this set of variations is finite.
+The first step of the proposed method refers to clustering the images within sets with the same labels. 
+By this, we tried to identify the main ways of writing each of the characters. %label?
+The primary idea that motivated this step of the improvement method is the assumption that although there are variations in the ways of writing a particular 
+character by individual authors, nevertheless this set of variations is finite.
 %Another motive for using clustering by instances is the fact that an individual author when writing different characters, will never write two completely identical.
 %Any newly written character will be a small modification of his way of writing.
 %By averaging such characters, we expect that variation in writing will annul, and this again leads to a crystallization of the style (the way in which the author writes that character).
-We clustered images of the training set for the base classifier and validation set for the base classifier.
+We clustered images of the training set for the base classifier and validation set for the base classifier. 
+It's important to notice that we used the output of the next-to-last layer of the base CNN classifier as a set of attributes that characterize a handwritten character image \citep{nexttolast}. 
+A sketch of this step of the improvement model is given by:
+\begin{itemize}
+  \item Group images from train and validation set for the base classifier with respect to their labels
+  \item Replace each of the images with appropriate output from the next-to-last layer of pretrained CNN classifier
+  \item Perform K-means clustering in each of the groups (now groups of vectors)
+  \item Cluster centroids from each group are a reference mode of writing of the character the group is labeled with
+\end{itemize}
 
-We used the output of the next-to-last layer of the base CNN classifier as a set of attributes that characterize a handwritten character image \citep{nexttolast}.
-The next-to-last layer of the neural network gives representations of the input images in some new attribute space in which we expect the different characters to be well separated,
+The next-to-last layer of the neural network gives representations of the input image in some new attribute space in which we expect the different characters to be well separated,
 while the last layer of the neural network only plays the role of labeling over those representations.
 Therefore, the last layer of the network is cut off, and for the set of attributes that describe the image from the input we used the values of the neurons of the next-to-last CNN layer \citep{style1, style2}.
 
-Due to the nature of our data, we used the K-means clustering algorithm \citep{kmeans}.
+We used the K-means clustering algorithm, due to the nature of our data \citep{kmeans}.
 Cluster centroids will represent the writing styles of the clustered character.
 The number of clusters for each label is given by the formula:
 \begin{equation}
@@ -255,29 +264,65 @@ The motivation for this approach is the fact that the presented improvement meth
 
 After clustering, for each character (label) a certain number of its characteristic writing styles were selected (centroids of clusters), which were represented by vectors of appropriate dimensions
 (the dimension of the vector is equal to the number of neurons in the next-to-last layer of the base CNN).
-The second part of the method, which is described in this section, relates to the model use pahse.
+The second part of the our method, which we describe in this section, relates to the model use phase.
 
-Like we said before, images each of individual users from the application set are stratified into two sets: an adaptation set and a test set. % Vec sam ovo rekao u overviewu metoda, brisati?
-In the adaptation set, the method of improvement creates the writing history of each individual user.
-Based on the writing history, the base classifier will be improved during its usage.
+Like we said before, images each of individual users from the application set are stratified into two sets: an adaptation set and a test set. 
+In the adaptation set, the method of improvement creates the user's writing history. 
+Based on the writing history, the base classifier will be improved during its usage. 
 Based on the writing history, it is also necessary to conclude when the base classifier for the current user and his/her writing style make a mistake, and how to correct those mistakes.
 
-The process of creating a user's writing history consists of the following.
+% Da li je previse formalno ovo sa oznakama l1, l2, v itd.?
+The process of creating a user's writing history consists of the following: % ovo za stratifikovanu podelu slika vec sam rekao u pasusu iznad
+\begin{itemize}
+  \item For each image of the authors adaptation set: 
+  \begin{itemize}
+    \item Let $l_1$ denote the original label and $l_2$ the label provided by the pretrained base CNN; 
+    let $v$ denote the output of the next-to-last layer of the base CNN 
+    \item Among all centroids (writing styles) that correspond to label $l_1$ we found the vector closest to $v$
+    \item We associate the previously founded vector with a pair ($l_1$, $l_2$)
+  \end{itemize}
+  \item Author's writing history consist of all the ordered pairs ($l_1$, $l_2$) that appeared during the previous passing through images of the adaptation set; 
+  each pair is assigned an average of the vectors he was previously associated with
+  
+  % To each pair of labels ($l_1$, $l_2$) that show up when previously passing through the adaptation set, we assign the average of all previously associated vectors
+\end{itemize}
+
 For the input image, we focus on the correct label as well as the label provided by the base classifier.
 Based on the output of the next-to-last layer of CNN classifier, we find the closest cluster among the clusters that correspond to the correct label (among the various writing styles of that character).
 We used the Euclidean metric for the search. % fix
 This search attempts to identify the user's character's writing style with some of the predefined styles.
 
-The writing history for each ordered pair \textit{(predicted label, correct label)} remembers the average of the centroids closest to the output vector of the next-to-last CNN layer.
+The writing history for each ordered pair \textit{(predicted label, correct label)} remembers the average of the centroids 
+which are closest to the appropriate output vectors of the next-to-last base CNN layer 
+(for images that was labeled with the \textit{correct label} and the base CNN classifier provides \textit{predicted label} on them). 
 The interpretation of this is as follows: when the base CNN classifier predicts % provide?
  a \textit{predicted label} for a picture showing the \textit{correct label},
-on the basis of the output of the next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character).
+on the basis of the output of the next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character). % Popraviti ovu recenicu?
 Clusters assigned to the same pair may not always be identical.
 We consider their average to be a writing style for a particular character of a particular user.
 
 \subsection{Using user writing history}
 
-After creating user writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify its predictions and change them based on the method K closest neighbors
+A brief outline of the steps taken in a phase of using a user's writing history is provided with: 
+\begin{itemize}
+  \item kreiram writer\_network\_spectar i writer\_knn\_spectars kao nizove B(1,1)
+  \item Za svaku sliku skupa za adaptaciju:
+  \begin{itemize}
+    \item l1, l2, v
+    \item Azuriram writer\_network\_spectar kako?
+    \item Azuriram writer\_knn\_spectar (za svako k) kako?
+  \end{itemize}
+  \item time sam kreirao spektre sa kojima ocenjujem pouzdanost
+  \item Za svaku sliku skupa za primenu:
+  \begin{itemize}
+    \item l1, l2, v
+    \item get list of predictions or each k
+    \item Choose who have biggest mean of all spectars, use it as a aprediction
+    \item UPDATE history AND spectars (skalabilnost)
+  \end{itemize}
+\end{itemize}
+
+After creating users writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify its predictions and change them based on the method K closest neighbors
 which was trained on the mentioned user writing history.
 The method we present, on the history of writing do not create one KNN model for correction, but a series of KNN models, where $k$ taking values $2, 4, 6, 8$ and $10$.
 
