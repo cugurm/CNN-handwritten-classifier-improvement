@@ -82,7 +82,7 @@ Neural Classifier of Handwritten Text to Individual Users}
 \maketitle
 
 \begin{abstract}
-  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adjusting to the writing 
+  In this paper we propose a method of improving performance of a convolutional neural network (CNN) classifier of offline handwritten text by adapting it to the writing 
   style of an individual user. It does not require retraining or altering the base CNN classifier nor transfer of user's data to the server side, which results in 
   a lightweight privacy preserving method which does not require any specialized deep learning framework or hardware on the user's side. In the training phase, 
   performed on the server side, base CNN is trained and writing styles of different characters are defined by clustering in the feature space learned by the CNN. 
@@ -196,9 +196,9 @@ Note that while the idea behind the learning users' handwriting styles is rather
 The basic idea is to distinguish the reference modes %pattern
 of writing for each character.
 This is motivated by the intuition that each character can be written in finite significantly different ways.
-Separation the different writing styles of each character was achieved by clustering.
+Separation the different writing styles of each character was achieved by clustering. 
 Thus, for each of the characters, several clusters were obtained representing aggregated different writing styles of that character.
-This tends to separate the different writing styles of each of them.
+This tends to separate the main writing styles of each of them. 
 
 When the proposed method is used, on the application set, for each user a set of characters that he or she authored is divided into two sets: an adaptation set and test set.
 On the adaptation set, we detect the user's writing style by memorizing his individual characters writing patterns.
@@ -257,7 +257,7 @@ Previous heuristics were determined experimentally, with respect to the used dat
 The quality of clustering was evaluated by using the K nearest neighbor algorithm (KNN) which was trained on the obtained centroids.
 Euclidean metric was used for clustering as well as for its evaluation.
 The number of neighbors in this evaluation belonged to the set $\{1,2,3,4,5,7,8,9,10,15\}$.
-Clustering quality was evaluated based on the highest precision of the KNN method for various values of $k$.
+Clustering quality was evaluated based on the highest precision of the KNN methods for various values of $k$.
 The motivation for this approach is the fact that the presented improvement method will, in the following, use the KNN algorithm in order to find the character most similar to the current one within the writing history.
 
 \subsection{Creating a user writing history}
@@ -297,61 +297,69 @@ which are closest to the appropriate output vectors of the next-to-last base CNN
 (for images that was labeled with the \textit{correct label} and the base CNN classifier provides \textit{predicted label} on them). 
 The interpretation of this is as follows: when the base CNN classifier predicts % provide?
  a \textit{predicted label} for a picture showing the \textit{correct label},
-on the basis of the output of the next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character). % Popraviti ovu recenicu?
+on the basis of the output of the next-to-last layer of the base CNN, this ordered pair is assigned an appropriate cluster (a way of writing the correct character). 
+This attempts to capture the way the user writes character \textit{correct label} when the underlying network predicts character \textit{predicted label}. 
 Clusters assigned to the same pair may not always be identical.
-We consider their average to be a writing style for a particular character of a particular user.
+We consider their average to be %a "wrong" 
+a user writing style for a character \textit{correct label} when a base CNN predicts \textit{predited label}. 
+Based on the user writing history, an automatic analysis of the base CNN error-space will be performed during the model usage phase. 
 
 \subsection{Using a user writing history}
 
-After creating users writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify its predictions and change them based on the method K closest neighbors
+After creating users writing history, it is necessary to make decisions on which cases to trust the base classifier, and when to modify his predictions and change them based on the method K nearest neighbors
 which was trained on the mentioned user writing history.
 The method we present, on the user's history of writing do not create one KNN model for correction, but a series of KNN models, where $k$ taking values $2, 4, 6, 8$ and $10$.
-The idea was to use them to improve the behavior of the base pretrained CNN classifier.
+The idea was to use them to improve the behavior of the base CNN classifier by learning when he makes mistakes for each of the individual users. 
 
 A brief outline of the steps taken in a phase of using a user's writing history is provided with: 
 \begin{itemize}
-  \item Create confidence vectors for the base classifier and for the auxiliary classifiers (KNN classifiers for various values of k)
+  \item Create the confidence vectors for the base classifier and for all of the auxiliary classifiers (KNN classifiers for various values of $k$)
   \item For each image of the author's adaptation set: 
   \begin{itemize}
     \item As before, let $l_1$ denote label predicted by the base CNN classifier, $l_2$ denote the ground truth label, and $v$ denote the output vector of the next-to-last layer of the base CNN for the current image
-    \item Based on labels $l_1$ and $l_2$, update the confidence vector of the base CNN classifier accordingly
+    \item Based on labels $l_1$ and $l_2$, update the confidence vector of the base CNN classifier %accordingly
     \item Based on the vector $v$ and the vectors of the user's writing history corresponding to the ordered pairs with the first coordinate of $l_1$, 
     give a prediction for each of the KNN methods
-    \item For each of the created KNN methods, based on the label $l_2$ and its prediction for the current image, update its confidence vector
+    \item For each of the created KNN methods update its confidence vectors accordingly to the label $l_2$ and their prediction for the current image
     %ako knn ne moze da predvidi labelu, predvidja ono sto i bazni!
   \end{itemize}
-  \item Previously going through all the images of the adaptation set the confidence vectors for the base and auxiliary classifiers was set; we use them further
+  \item Based on the previous go through of all of the images of the adaptation set the confidence vectors for the base CNN and auxiliary KNN classifiers were set; we use them further in the next step % Da li da brisem ovaj bullet, on nije korak??
   \item For each image of the author's test set:
   \begin{itemize}
-    \item Again, $l_1$ denote CNN predicted label, $l_2$ ground truth label and $v$ net-to-last CNN layer output
-    \item In the same way as for images of the adaptation set, based on the vector $v$ and vectors of users writing history thet correspond to the ordered pairs with the first coordinate of $l_1$, get list of predictions or each of the KNN methods
-    \item Based on $l_1$, confidence vector for the base classifier, previous list of predictions for the KNN methods and their confidence vector choose most confident classifier and use its prediction
-    \item Update user writing history (by information about current image), and update confidence vectors of base CNN and auxiliary classificators based on $l_2$ and their predictions
+    \item Again, let $l_1$ denote the CNN predicted label, $l_2$ denote the ground truth label and $v$ signify the next-to-last CNN layer output for the current image
+    \item In the same way as for the images of the adaptation set, based on the vector $v$ and vectors of user's writing history that correspond to the ordered pairs with the first coordinate of $l_1$, get list of predictions for each of the auxiliary KNN classifiers
+    \item Based on $l_1$, a confidence vector of the base classifier, the previous list of predictions of the KNN methods and their confidence vectors choose the most confident classifier and use his prediction as the final prediction of the improvement method
+    \item Update the user's writing history (by information about the current image); update confidence vectors of the base CNN and all of the auxiliary KNN classifiers based on $l_2$ and their predictions
   \end{itemize}
 \end{itemize}
 
 Based on the users writing history, a confidence vector of the base classifier and a confidence vectors of the KNN methods are created for each of the previous values of the $k$ parameter.
-The classifier confidence vector is an array of beta distribution expectations, which evaluate the reliability of the classifier when predicting each of the labels.
+The classifier confidence vector is an array of beta distributions %expectations, 
+which evaluate the reliability of the classifier when predicting each of the labels.
 One beta distribution is created for each label $l$.
 The degree of confidence of the classifier for label $l$ is represented by the mathematical expectation of the created beta distribution.
 This expectation is a function of parameters $\alpha$  and $\beta$.
 For each image of the adaptation set for which the classifier predicts label $l$, the parameters $\alpha$  and $\beta$ of the beta distribution are updated, depending on whether the prediction is correct or not.
 Correct predictions increase the value of parameter $\beta$
-(thus increasing the mathematical expectation of beta distribution, that is the degree of confidence in the classifier when it predicts the label $l$),
+(thus increasing the mathematical expectation of beta distribution, that is the degree of confidence in the classifier when he predicts the label $l$),
 while negative predictions increase the value of parameter $\alpha$
 (thus reducing the mathematical expectation of beta distribution).
 
-The confidence vector of each of the classifiers is updated based on the original labels and their predictions for the images of the adaptation set.
-The KNNs training set is a subset of the user's writing history, consisting of vectors and their original labels of all writing history pairs for
-which the \textit{predicted label} equals the current prediction of the base classifier.
+The confidence vector of each of the classifiers is updated based on the original labels and theirs predictions for the images of the adaptation set.
 
-In doing so, we created appropriate confidence vectors at the adaptation set, and we evaluate the reliability of both the base classifier and the k nearest-neighbor methods, for different values of $k$.
+The KNNs training set is a subset of the user's writing history, consisting of vectors and their original labels of all writing history pairs for
+which the \textit{predicted label} equals the current prediction of the base classifier. 
+For each image, based on the predictions of the base CNN classifier and the author's writing history, we obtain predictions of nearest neighbor auxiliary classifiers for various values of $k$.
+If the base classifier predicts label $l$, within the writing history, we look at the style vectors of all the pairs \textit{(predicted label, correct label)} for which the \textit{predicted label} is precisely $l$.
+Using these vectors, for each value of $k$, we make the decision by the KNN method with respect to the correct labels. 
+If the auxiliary classifier presented by the method of K nearest neighbors, for some particular value of $k$, cannot give a prediction for the 
+current CNN \textit{predicted label} and current CNN next-to-last layer output (there are not enough training instances relative to the value of $k$), 
+the prediction of the base CNN is adopted as the prediction of this auxiliary classifier on the current instance. 
+
+In doing so, we created appropriate confidence vectors at the adaptation set, and we evaluate the reliability of both the base classifier and the K nearest-neighbor methods, for different values of $k$.
 Based on that, we determine which one classifier to trust during model use (we believe the classifier that for the given image has the highest reliability on the character he predicts).
 
 When used, in a test set, instead of just one prediction that a base CNN classifier gives us, we get multiple of them simultaneously.
-For each image, based on the predictions of the base CNN classifier and the author's writing history, we obtain predictions of nearest neighbor methods for various values of $k$.
-If the base classifier predicts label $l$, within the writing history, we look at the style vectors of all the pairs \textit{(predicted label, correct label)} for which the \textit{predicted label} is precisely $l$.
-Using these vectors, for each value of $k$, we make the decision by the KNN method with respect to the correct labels.
 Based on the confidence vector of the base classifier (we use the value of expectation that relates to the prediction of label $l$), and based on confidence vectors of KNN methods for various values of $k$
 (we use the values of expectations related to their predicted labels) we decide which character to predict.
 
@@ -361,7 +369,7 @@ This corresponds to a real-world application, in which the user would have corre
 and the application would have information about the correct label.
 In the absence of a correction, the model is sure to have successfully classified the character just processed.
 With this method of execution, the presented method achieves better results over longer, because the degree of its reliability is directly proportional to the size of the user writing history.
-This is a great advantage when using the presented improvement model in practice.
+The scalability property that our improuvement method posses represents a great advantage when using it in the practice. 
 
 \section{Evaluation}
 
